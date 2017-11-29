@@ -4,9 +4,14 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mysql = require('mysql');
+var session = require('express-session');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var newAccount = require('./routes/register');
+var login = require('./routes/loginroutes');
+var account = require('./routes/account');
 
 var app = express();
 
@@ -18,12 +23,52 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true })); // TODO: This was false, check to see if it has to be true
 app.use(cookieParser());
+app.use(session({
+  secret: 'Ghita-Rulez',
+  //key: 'sid',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // will need HTTPS to be true
+}));
 app.use(express.static(path.join(__dirname, 'public')));
+
+var db = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'root',
+  password : 'password-here',
+  database : 'db-here'
+});
+
+db.connect(function(err){
+  if(!err) {
+    console.log("Database is connected.");
+  } else {
+    console.log("Error connecting database");
+  }
+});
+
+app.use(function(req, res, next){
+  req.db = db;
+  next();
+});
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/register', newAccount);
+app.use('/account', account);
+app.post('/adduser', login.register);
+app.post('/login', login.login);
+app.get('/logout', login.logout);
+
+// Needed for login stuff, I think
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  req.db = db;
+  next();
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
