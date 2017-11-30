@@ -9,14 +9,14 @@ exports.checkAuth = function(req, res, next) {
 exports.register = function(req,res){
   var users={
     "username":req.body.username,
-    "password":req.body.password
+    "user_password":req.body.password
   }
   if (!users.username) {
     return res.status(401).send({ "message": "A username is required" });
-  } else if(!users.password) {
+  } else if(!users.user_password) {
     return res.status(401).send({ "message": "A password is required" });
   }
-  req.db.query('INSERT INTO users SET ?',users, function (error, result, fields) {
+  req.db.query('INSERT INTO movie_user SET ?',users, function (error, result, fields) {
     if (error) {
       console.log("error ocurred", error);
       res.send({
@@ -44,7 +44,7 @@ exports.login = function(req, res) {
     return res.status(401).send({ "message": "A password is required" });
   }
 
-  req.db.query('SELECT * FROM users WHERE username = ?', [username], function (error, result, fields) {
+  req.db.query('SELECT * FROM movie_user WHERE username = ?', [username], function (error, result, fields) {
     if (error) {
       res.send({
         "code":400,
@@ -52,7 +52,7 @@ exports.login = function(req, res) {
       })
     } else {
       if (result.length > 0) {
-        if (result[0].password == password) {
+        if (result[0].user_password == password) {
           req.session.user = result[0].username;
           console.log("Login: " + req.session.user)
           //res.send("account");

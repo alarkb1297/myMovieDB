@@ -37,8 +37,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 var db = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
-  password : 'password-here',
-  database : 'db-here'
+  password : 'Alark212',
+  database : 'movieDB'
 });
 
 db.connect(function(err){
