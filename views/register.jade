@@ -2,7 +2,9 @@ extends layout
 
 block content
   h1= title
-  form#formAddUser(name="adduser",method="post",action="/adduser")
-    input#inputUserName(type="text", placeholder="username", name="username")
-    input#inputUserPass(type="password", placeholder="password", name="password")
-    button#btnSubmit(type="submit") submit
+  .container-fluid
+    form#formAddUser(name="adduser", method="post", action="/adduser")
+      .form-group
+        input#inputUserName.form-control(type="text", placeholder="username", name="username")
+        input#inputUserPass.form-control(type="password", placeholder="password", name="password")
+        button#btnSubmit.btn.btn-primary.btn-block(type="submit") submit

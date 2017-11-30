@@ -7,28 +7,27 @@ exports.checkAuth = function(req, res, next) {
 }
 
 exports.register = function(req,res){
-  var users={
-    "username":req.body.username,
-    "user_password":req.body.password
-  }
-  if (!users.username) {
+  var username= req.body.username;
+  var password = req.body.password;
+
+  if(!username) {
     return res.status(401).send({ "message": "A username is required" });
-  } else if(!users.user_password) {
+  } else if(!password) {
     return res.status(401).send({ "message": "A password is required" });
   }
-  req.db.query('INSERT INTO movie_user SET ?',users, function (error, result, fields) {
+
+  req.db.query('CALL register(?, ?)', [username, password], function (error, result, fields) {
     if (error) {
-      console.log("error ocurred", error);
-      res.send({
-        "code":400,
-        "failed":"error ocurred"
-      })
-    } else {
-      console.log('The solution is: ', result);
+      if (error.code == "ER_DUP_ENTRY") {
+        res.redirect("register");
+      }
+
+      // throw error;
       // res.send({
-      //   "code":200,
-      //   "success":"user registered sucessfully"
-      // });
+      //   "code": 400,
+      //   "failed": "error ocurred"
+      // })
+    } else {
       res.redirect("/");
     }
   });
@@ -46,16 +45,15 @@ exports.login = function(req, res) {
 
   req.db.query('SELECT * FROM movie_user WHERE username = ?', [username], function (error, result, fields) {
     if (error) {
-      res.send({
-        "code":400,
-        "failed":"error occurred"
-      })
+      console.log(error);
+      // res.send({
+      //   "code":400,
+      //   "failed":"error occurred"
+      // })
     } else {
       if (result.length > 0) {
         if (result[0].user_password == password) {
           req.session.user = result[0].username;
-          console.log("Login: " + req.session.user)
-          //res.send("account");
           res.redirect("account");
           // res.send({
           //   "code":200,

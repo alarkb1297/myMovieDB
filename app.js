@@ -12,6 +12,7 @@ var users = require('./routes/users');
 var newAccount = require('./routes/register');
 var login = require('./routes/loginroutes');
 var account = require('./routes/account');
+var search = require('./routes/search');
 
 var app = express();
 
@@ -51,6 +52,7 @@ db.connect(function(err){
 
 app.use(function(req, res, next){
   req.db = db;
+  res.locals.session = req.session;
   next();
 });
 
@@ -58,6 +60,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/register', newAccount);
 app.use('/account', account);
+app.use('/search', search);
 app.post('/adduser', login.register);
 app.post('/login', login.login);
 app.get('/logout', login.logout);
