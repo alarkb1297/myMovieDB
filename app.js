@@ -4,14 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mysql = require('mysql');
 var session = require('express-session');
-
-var index = require('./routes/index');
-var newAccount = require('./routes/register');
-var login = require('./routes/loginroutes');
-//var account = require('./routes/account');
-var search = require('./routes/search');
 
 var app = express();
 
@@ -34,40 +27,16 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-var db = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'Alark212',
-  database : 'movieDB'
-});
 
-db.connect(function(err){
-  if(!err) {
-    console.log("Database is connected.");
-  } else {
-    console.log("Error connecting database");
-  }
-});
+require('./models/db').connect();
 
-app.use(function(req, res, next){
-  req.db = db;
-  res.locals.session = req.session;
-  next();
-});
-
-app.use('/', index);
-app.use('/register', newAccount);
-//app.use('/account', account);
-app.use('/search', search);
-app.post('/adduser', login.register);
-app.post('/login', login.login);
-app.get('/logout', login.logout);
+app.use(require('./middlewares/users'));
+app.use(require('./controllers'));
 
 // Needed for login stuff, I think
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  req.db = db;
   next();
 });
 

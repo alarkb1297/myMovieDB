@@ -16,6 +16,10 @@ html(lang="en")
         form#formLogout(name="logout", method="get", action="/logout")
           button#btnSubmit.btn.btn-success(type="submit") Logout
       else
+        if retry == 2
+          p Username and password do not match
+        else if retry == 3
+          p User not found
         form#formLogin(name="login", method="post", action="/login")
           .form-inline
             input#inputUserName.form-control(type="text", placeholder="username", name="username")
