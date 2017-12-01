@@ -3,8 +3,9 @@ var router = express.Router();
 
 /* GET register page. */
 router.get('/', function (req, res, next) {
-  res.render('register', { title: 'MyMovieDB' })
+  res.render('register', { title: 'MyMovieDB', retry: req.param('retry') });
 });
+
 //
 // /* POST to register user */
 // router.post('/adduser', login.register);

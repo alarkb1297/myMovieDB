@@ -8,10 +8,9 @@ var mysql = require('mysql');
 var session = require('express-session');
 
 var index = require('./routes/index');
-var users = require('./routes/users');
 var newAccount = require('./routes/register');
 var login = require('./routes/loginroutes');
-var account = require('./routes/account');
+//var account = require('./routes/account');
 var search = require('./routes/search');
 
 var app = express();
@@ -57,9 +56,8 @@ app.use(function(req, res, next){
 });
 
 app.use('/', index);
-app.use('/users', users);
 app.use('/register', newAccount);
-app.use('/account', account);
+//app.use('/account', account);
 app.use('/search', search);
 app.post('/adduser', login.register);
 app.post('/login', login.login);

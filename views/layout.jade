@@ -7,10 +7,9 @@ html(lang="en")
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     header.navbar.navbar-default.navbar-fixed-top
-      #links
-        a(href="/") Home
-        form#formSearch(name="search", method="get", action="/search")
-          .form-inline
+      a(href="/") Home
+      form#formSearch(name="search", method="get", action="/search")
+        .form-inline
             input#inputQuery.form-control(type="text", placeholder="Search", name="search")
       if session.user
         a(href="account") #{session.user}

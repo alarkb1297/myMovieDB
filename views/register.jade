@@ -2,6 +2,8 @@ extends layout
 
 block content
   h1= title
+  if retry == 1
+    p Username already taken, try again
   .container-fluid
     form#formAddUser(name="adduser", method="post", action="/adduser")
       .form-group

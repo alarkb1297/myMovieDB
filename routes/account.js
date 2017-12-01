@@ -4,6 +4,8 @@ var router = express.Router();
 
 /* GET account page. */
 router.get('/', auth.checkAuth, function (req, res, next) {
+
+  // req.session.user
   res.render('account', { title: 'MyMovieDB' })
 });
 

@@ -19,7 +19,7 @@ exports.register = function(req,res){
   req.db.query('CALL register(?, ?)', [username, password], function (error, result, fields) {
     if (error) {
       if (error.code == "ER_DUP_ENTRY") {
-        res.redirect("register");
+        res.redirect("register?retry=1");
       }
 
       // throw error;
