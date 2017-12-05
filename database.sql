@@ -290,7 +290,7 @@ CREATE PROCEDURE add_movie(
     DECLARE d_id INT;
     
     IF (SELECT COUNT(*) FROM director WHERE director_name = director_n) > 0 THEN
-		SET d_id = (SELECT director_id FROM director WHERE director_name = director_n
+		SET d_id = (SELECT director_id FROM director WHERE director_name = director_n);
 	ELSE
 		INSERT INTO director (director_name) VALUE (director_n);
         SET d_id = LAST_INSERT_ID();
@@ -298,11 +298,11 @@ CREATE PROCEDURE add_movie(
     
     INSERT INTO movies (title, director_id, release_year, genre, summary, trailer) VALUE
 			(title, d_id, ryear, genre, summary, trailer);
-	SELECT LAST_INSERT_ID();
+	SELECT LAST_INSERT_ID() AS movie_id;
 END$$
 DELIMITER ;
 
-
+select * from movies;
 
 insert into actor (actor_name, dob) VALUES
 ("Jim Carrey", NOW()),

@@ -28,11 +28,12 @@ exports.getTopMovies = function(cb) {
 // Add movie to db
 exports.addMovie = function(movie, cb) {
 
-  db.query('call addMovie(?, ?, ?, ?, ?, ?)',
+  db.query('call add_movie(?, ?, ?, ?, ?, ?)',
       [movie.title, movie.director, movie.year, movie.genre, movie.summary, movie.trailer],
       function (error, result, fields) {
       if (error) return cb(error);
-      cb (null, result);
+      console.log(result[0]);
+      cb (null, result[0][0].movie_id);
   })
 
 }

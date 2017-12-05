@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="35a85779-7bee-46a6-8d22-5062565b03ba" name="Default" comment="User registration and account login working.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/movies.js" afterPath="$PROJECT_DIR$/controllers/movies.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/database.sql" afterPath="$PROJECT_DIR$/database.sql" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/movie.js" afterPath="$PROJECT_DIR$/models/movie.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/index.jade" afterPath="$PROJECT_DIR$/views/index.jade" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -21,7 +20,7 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="addMovie.jade" pinned="false" current-in-tab="true">
+      <file leaf-file-name="addMovie.jade" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/addMovie.jade">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="60">
@@ -31,11 +30,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="movie.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="database.sql" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/database.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="292" column="87" lean-forward="false" selection-start-line="292" selection-start-column="87" selection-end-line="292" selection-end-column="87" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="movie.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/movie.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="367">
-              <caret line="26" column="22" lean-forward="false" selection-start-line="26" selection-start-column="22" selection-end-line="26" selection-end-column="22" />
+              <caret line="35" column="27" lean-forward="false" selection-start-line="35" selection-start-column="27" selection-end-line="35" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -44,8 +53,8 @@
       <file leaf-file-name="movies.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/controllers/movies.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="301">
-              <caret line="50" column="18" lean-forward="true" selection-start-line="50" selection-start-column="18" selection-end-line="50" selection-end-column="18" />
+            <state relative-caret-position="332">
+              <caret line="53" column="40" lean-forward="false" selection-start-line="53" selection-start-column="33" selection-end-line="53" selection-end-column="40" />
               <folding />
             </state>
           </provider>
@@ -96,7 +105,13 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="422">
               <caret line="93" column="30" lean-forward="false" selection-start-line="93" selection-start-column="30" selection-end-line="93" selection-end-column="30" />
-              <folding />
+              <folding>
+                <marker date="1512516434861" expanded="true" signature="1456:2705" ph="{...}" />
+                <marker date="1512516434861" expanded="true" signature="1854:2701" ph="{...}" />
+                <marker date="1512516434861" expanded="true" signature="2396:2695" ph="{...}" />
+                <marker date="1512516434861" expanded="true" signature="2709:2730" ph="/*...*/" />
+                <marker date="1512516434861" expanded="true" signature="2778:2829" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -106,16 +121,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="search.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/search.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="44" lean-forward="false" selection-start-line="4" selection-start-column="44" selection-end-line="4" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -163,18 +168,18 @@
         <option value="$PROJECT_DIR$/routes/search.js" />
         <option value="$PROJECT_DIR$/routes/loginroutes.js" />
         <option value="$PROJECT_DIR$/views/account.jade" />
-        <option value="$PROJECT_DIR$/database.sql" />
         <option value="$PROJECT_DIR$/controllers/index.js" />
         <option value="$PROJECT_DIR$/models/user.js" />
         <option value="$PROJECT_DIR$/views/layout.jade" />
         <option value="$PROJECT_DIR$/middlewares/auth.js" />
         <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/views/register.jade" />
-        <option value="$PROJECT_DIR$/models/movie.js" />
         <option value="$PROJECT_DIR$/controllers/movies.js" />
         <option value="$PROJECT_DIR$/controllers/users.js" />
         <option value="$PROJECT_DIR$/views/index.jade" />
         <option value="$PROJECT_DIR$/views/addMovie.jade" />
+        <option value="$PROJECT_DIR$/database.sql" />
+        <option value="$PROJECT_DIR$/models/movie.js" />
       </list>
     </option>
   </component>
@@ -305,7 +310,12 @@
           <option name="mySupportsDeletion" value="false" />
           <option name="myCanBeAbsent" value="false" />
           <option name="myId" value="UPDATED" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/controllers/movies.js</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/controllers/users.js</PATH>
           <PATH vcs="Git" revision="">$PROJECT_DIR$/database.sql</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/middlewares/auth.js</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/models/movie.js</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/views/movie.jade</PATH>
         </FILE-GROUP>
         <FILE-GROUP>
           <option name="myUpdateName" value="Created" />
@@ -487,6 +497,12 @@
       <item index="0" class="java.lang.String" itemvalue="Node.js.bin/www" />
     </list>
   </component>
+  <component name="SFStoredExecutionPersistentComponent">
+    <executions>
+      <execution name="Default" sourceToExecute="" />
+    </executions>
+    <lastSelectedExecutionName>Default</lastSelectedExecutionName>
+  </component>
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
   </component>
@@ -525,7 +541,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="45611000" />
+    <option name="totallyTimeSpent" value="46405000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="6" />
@@ -698,14 +714,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/database.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2645">
-          <caret line="219" column="12" lean-forward="false" selection-start-line="219" selection-start-column="10" selection-end-line="219" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/middlewares/auth.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
@@ -810,14 +818,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/movie.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="367">
-          <caret line="26" column="22" lean-forward="false" selection-start-line="26" selection-start-column="22" selection-end-line="26" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/user.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="990">
@@ -838,15 +838,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="422">
           <caret line="93" column="30" lean-forward="false" selection-start-line="93" selection-start-column="30" selection-end-line="93" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/controllers/movies.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="301">
-          <caret line="50" column="18" lean-forward="true" selection-start-line="50" selection-start-column="18" selection-end-line="50" selection-end-column="18" />
-          <folding />
+          <folding>
+            <marker date="1512516434861" expanded="true" signature="1456:2705" ph="{...}" />
+            <marker date="1512516434861" expanded="true" signature="1854:2701" ph="{...}" />
+            <marker date="1512516434861" expanded="true" signature="2396:2695" ph="{...}" />
+            <marker date="1512516434861" expanded="true" signature="2709:2730" ph="/*...*/" />
+            <marker date="1512516434861" expanded="true" signature="2778:2829" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -866,10 +864,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/database.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="292" column="87" lean-forward="false" selection-start-line="292" selection-start-column="87" selection-end-line="292" selection-end-column="87" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/views/addMovie.jade">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
           <caret line="4" column="65" lean-forward="false" selection-start-line="4" selection-start-column="65" selection-end-line="4" selection-end-column="65" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/movies.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="332">
+          <caret line="53" column="40" lean-forward="false" selection-start-line="53" selection-start-column="33" selection-end-line="53" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/movie.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="367">
+          <caret line="35" column="27" lean-forward="false" selection-start-line="35" selection-start-column="27" selection-end-line="35" selection-end-column="27" />
           <folding />
         </state>
       </provider>
