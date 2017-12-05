@@ -3,10 +3,14 @@ var router = express.Router();
 var User = require('../models/user');
 var auth = require('../middlewares/auth');
 
-
 /* GET accounts page */
 router.get('/account', auth, function (req, res, next) {
-  res.render('account', { title: 'MyMovieDB' })
+  var movies;
+  User.getSavedMovies(req.session.user, function (err, res) {
+      
+  });
+    
+  res.render('account', { title: 'MyMovieDB', movies: 'movies'});
 });
 
 /* GET register page */
@@ -79,6 +83,5 @@ router.get('/logout', auth, function(req, res) {
   delete req.session.user;
   res.redirect('/');
 });
-
 
 module.exports = router;

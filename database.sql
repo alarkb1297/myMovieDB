@@ -51,11 +51,11 @@ foreign key (movie_id) references movies (movie_id),
 foreign key (actor_id) references actor (actor_id)
 ) engine = innoDB;
 
-
+drop table if exists movie_user;
 CREATE TABLE movie_user (
 username VARCHAR(60) NOT NULL UNIQUE PRIMARY KEY,
 user_password VARCHAR(60) NOT NULL,
-is_admin int not null
+is_admin int not null default 0
 ) ENGINE = innoDB;
 
 

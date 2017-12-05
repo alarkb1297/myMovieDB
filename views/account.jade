@@ -3,3 +3,10 @@ extends layout
 block content
   h1 My Account
   p Welcome to #{title}, #{session.user}
+
+  p Saved Movies
+  if movies.length == 0
+    p No saved movies.
+  else
+    each movie in movies
+      p #[a(href="/movie/#{movie.movie_id}") #{movie.title}]

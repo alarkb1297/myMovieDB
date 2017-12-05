@@ -9,6 +9,7 @@ hash = function(password) {
 // Register a new user in the database
 exports.register = function(username, password, cb) {
   db.query('CALL register(?, ?)', [username, hash(password)], function (error, result, fields) {
+    console.log(error);
     if (error) return cb(error);
     cb(null, result);
   });
@@ -47,5 +48,16 @@ exports.saveMovie = function(username, movie_id, cb) {
 
     // Simply return true if the movie was added or removed
     cb(null, true);
+  });
+}
+
+// get saved movies
+
+exports.getSavedMovies = function(username, cb) {
+  db.query('select movie_title ' +
+            'from saved_movies join movies on saved_movies.movie_id = movies.movie_id ' +
+              'where saved_movies.username = ?', [username], function (error, result, fields) {
+      if (error) return cb(error);
+      cb(null, result);
   });
 }
