@@ -233,6 +233,44 @@ CREATE  PROCEDURE user_review_movie(uname VARCHAR(60), body VARCHAR(2000), mov_i
 END$$
 DELIMITER ;
 
+CREATE PROCEDURE find_num_saved_movies(mov_id INT) BEGIN
+IF EXISTS (SELECT COUNT(DISTINCT movie_user.username) FROM movie_user, saved_movies
+WHERE mov_id = movie_id
+AND saved_movies.movie_id = mov_id
+GROUP BY movie_user.username) THEN
+SELECT COUNT(DISTINCT movie_user.username) AS num_saved FROM movie_user, saved_movies
+WHERE mov_id = movie_id
+AND saved_movies.movie_id = mov_id
+GROUP BY movie_user.username;
+
+ELSE 
+
+SELECT 0 AS num_saved;
+
+END IF;
+
+END$$
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS get_popular_movies;
+DELIMITER $$
+CREATE PROCEDURE get_popular_movies() BEGIN
+
+
+SELECT movies.movie_id, title FROM
+(SELECT COUNT(movie_id), movie_id AS mvid FROM saved_movies
+GROUP BY movie_id
+ORDER BY COUNT(movie_id) DESC
+LIMIT 3) results, movies
+WHERE movies.movie_id = mvid
+GROUP BY movies.movie_id, title;
+
+END $$
+
+DELIMITER ;
+
+
 
 
 
