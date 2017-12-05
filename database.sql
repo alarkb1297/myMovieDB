@@ -233,6 +233,10 @@ CREATE  PROCEDURE user_review_movie(uname VARCHAR(60), body VARCHAR(2000), mov_i
 END$$
 DELIMITER ;
 
+
+DROP PROCEDURE IF EXISTS find_num_saved_movies; 
+DELIMITER $$
+
 CREATE PROCEDURE find_num_saved_movies(mov_id INT) BEGIN
 IF EXISTS (SELECT COUNT(DISTINCT movie_user.username) FROM movie_user, saved_movies
 WHERE mov_id = movie_id
