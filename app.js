@@ -20,7 +20,6 @@ app.use(bodyParser.urlencoded({ extended: true })); // TODO: This was false, che
 app.use(cookieParser());
 app.use(session({
   secret: 'Ghita-Rulez',
-  //key: 'sid',
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false } // will need HTTPS to be true

@@ -6,11 +6,11 @@ var auth = require('../middlewares/auth');
 /* GET accounts page */
 router.get('/account', auth, function (req, res, next) {
 
-  User.getSavedMovies(req.session.user, function (err, result) {
+  User.getSavedMovies(req.session.user.username, function (err, result) {
       if (err) {
           return res.send({
               "code": 400,
-              "failed": "error ocurred"
+              "failed": "error occurred"
           });
       }
       else {
@@ -82,18 +82,20 @@ router.post('/login', function(req, res) {
           });
       }
     }
-    req.session.user = uname;
-    User.isAdmin(uname, function (err, res) {
+    User.isAdmin(uname, function (err, result) {
         if (err) {
             return res.send({
                 "code": 400,
-                "failed": "error ocurred"
+                "failed": "error occurred"
             })
         }
-        req.session.isAdmin = res;
-    });
+        req.session.user = {
+            "username" : uname,
+            "isAdmin" : result
+        };
 
-    res.redirect("/account");
+        res.redirect("/account");
+    });
   });
 });
 

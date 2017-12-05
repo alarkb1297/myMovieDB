@@ -2,7 +2,7 @@ extends layout
 
 block content
   h1 My Account
-  p Welcome to #{title}, #{session.user}
+  p Welcome to #{title}, #{session.user.username}
 
   p Saved Movies
   if movies.length == 0

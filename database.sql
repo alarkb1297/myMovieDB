@@ -311,3 +311,4 @@ insert into roles (role_name, actor_id, movie_id) VALUES
 ("Singer", 2, 1),
 ("John", 1, 1);
 
+SELECT is_admin from movie_user where username = "test";

@@ -11,9 +11,7 @@ exports.get = function(movie_id, cb) {
 // get saved movies
 exports.getTopMovies = function(cb) {
     db.query('call get_popular_movies()', function (error, result, fields) {
-      console.log(error);
       if (error) return cb(error);
-      console.log(result[0]);
-        cb(null, result[0]);
+      cb(null, result[0]);
     });
 }

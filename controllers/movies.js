@@ -5,7 +5,7 @@ var User = require('../models/user');
 var auth = require('../middlewares/auth');
 
 router.post('/savemovie', auth, function (req, res, next) {
-  User.saveMovie(req.session.user, req.body.id, function (err, success) {
+  User.saveMovie(req.session.user.username, req.body.id, function (err, success) {
     if (err) {
       return res.send({
         "code": 400,
@@ -23,7 +23,7 @@ router.post('/savemovie', auth, function (req, res, next) {
 });
 
 router.get('/:movie_id', function (req, res, next) {
-  User.savedMovie(req.session.user, req.params.movie_id, function (err, isSaved) {
+  User.savedMovie(req.session.user.username, req.params.movie_id, function (err, isSaved) {
     if (err) {
       return res.send({
         "code": 400,

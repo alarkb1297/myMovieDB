@@ -64,7 +64,7 @@ exports.getSavedMovies = function(username, cb) {
 
 //is admin
 exports.isAdmin = function(username, cb) {
-    db.query('SELECT is_admin from movie_user where movie_user = ?', [username], function (error, result, fields) {
+    db.query('SELECT is_admin from movie_user where username = ?', [username], function (error, result, fields) {
         if (error) return cb(error);
 
         cb(null, !!result[0].is_admin);
