@@ -277,8 +277,6 @@ DELIMITER ;
 
 
 
-
-
 insert into actor (actor_name, dob) VALUES
 ("Jim Carrey", NOW()),
 ("Mariah Carey", NOW()),
@@ -312,3 +310,4 @@ insert into ratings (movie_id, rating_source, rating) VALUES
 insert into roles (role_name, actor_id, movie_id) VALUES
 ("Singer", 2, 1),
 ("John", 1, 1);
+

@@ -52,12 +52,21 @@ exports.saveMovie = function(username, movie_id, cb) {
 }
 
 // get saved movies
-
 exports.getSavedMovies = function(username, cb) {
-  db.query('select movie_title ' +
+  db.query('select title, movies.movie_id ' +
             'from saved_movies join movies on saved_movies.movie_id = movies.movie_id ' +
               'where saved_movies.username = ?', [username], function (error, result, fields) {
       if (error) return cb(error);
       cb(null, result);
   });
+}
+
+
+//is admin
+exports.isAdmin = function(username, cb) {
+    db.query('SELECT is_admin from movie_user where movie_user = ?', [username], function (error, result, fields) {
+        if (error) return cb(error);
+
+        cb(null, !!result[0].is_admin);
+    });
 }

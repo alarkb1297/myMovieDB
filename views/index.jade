@@ -3,3 +3,16 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+
+  h3 Top Movies
+  if movies.length == 0
+    p No top movies to show.
+  else
+    each movie in movies
+      p #[a(href="/movie/#{movie.movie_id}") #{movie.title}]
+
+
+  if session.user
+    a(href="/account") #{session.user}
+    form#formLogout(name="logout", method="get", action="/logout")
+      button#btnSubmit.btn.btn-success(type="submit") Logout

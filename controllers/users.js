@@ -5,12 +5,21 @@ var auth = require('../middlewares/auth');
 
 /* GET accounts page */
 router.get('/account', auth, function (req, res, next) {
-  var movies;
-  User.getSavedMovies(req.session.user, function (err, res) {
-      
+
+  User.getSavedMovies(req.session.user, function (err, result) {
+      if (err) {
+          return res.send({
+              "code": 400,
+              "failed": "error ocurred"
+          });
+      }
+      else {
+        var movies = result;
+      }
+
+      res.render('account', { title: 'MyMovieDB', movies: movies});
   });
-    
-  res.render('account', { title: 'MyMovieDB', movies: 'movies'});
+
 });
 
 /* GET register page */
@@ -74,6 +83,16 @@ router.post('/login', function(req, res) {
       }
     }
     req.session.user = uname;
+    User.isAdmin(uname, function (err, res) {
+        if (err) {
+            return res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        }
+        req.session.isAdmin = res;
+    });
+
     res.redirect("/account");
   });
 });
