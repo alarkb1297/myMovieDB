@@ -262,14 +262,14 @@ DELIMITER $$
 CREATE PROCEDURE get_popular_movies() BEGIN
 
 
-SELECT movies.movie_id, title, num_seen FROM
+SELECT movies.movie_id, title, results.num_seen FROM
 (SELECT COUNT(movie_id) AS num_seen, movie_id AS mvid FROM saved_movies
 GROUP BY movie_id
 ORDER BY COUNT(movie_id) DESC
 LIMIT 3) results, movies
 WHERE movies.movie_id = mvid
-GROUP BY movies.movie_id, title
-ORDER BY num_seen DESC;
+GROUP BY movies.movie_id, title, results.num_seen
+ORDER BY results.num_seen DESC;
 
 END $$
 
