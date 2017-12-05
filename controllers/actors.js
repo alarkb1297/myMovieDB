@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
-var Movie = require('../models/movie');
+var Actor = require('../models/actor');
 
-router.get('/:movie_id', function (req, res, next) {
-  Movie.get(req.params.movie_id, function (err, results) {
+router.get('/:actor_id', function (req, res, next) {
+  Actor.get(req.params.actor_id, function (err, results) {
     if (err) {
       return res.send({
         "code": 400,
@@ -15,30 +15,27 @@ router.get('/:movie_id', function (req, res, next) {
         "failed": "not found"
       })
     }
-    // May want to abstract this role processes since it's in actor too
-    var roleresults = results[0][0].rolelist
+
+    var roleresults = results[0][0].movielist
     var roles = [];
 
-    // Only operate if the movie has roles in it
     if (roleresults) {
       var rolelist = roleresults.split(',');
 
       rolelist.forEach(function (entry) {
         var name = entry.substring(0, entry.indexOf(':'));
-        var actor = entry.substring(entry.indexOf(':') + 1, entry.indexOf('/'));
+        var title = entry.substring(entry.indexOf(':') + 1, entry.indexOf('/'));
         var id = parseInt(entry.substring(entry.indexOf('/') + 1, entry.length));
 
         roles.push({
           "name": name,
-          "actor": actor,
+          "title": title,
           "id": id
         })
       });
     }
 
-    console.log(roles.length);
-
-    res.render('movie', {
+    res.render('actor', {
       title: 'MyMovieDB Details Page',
       details: results[0][0],
       roles: roles

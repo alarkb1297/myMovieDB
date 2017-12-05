@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h2.container-fluid Details
+
+    h3 Name
+    p= details.actor_name
+
+    h3 Date of Birth
+    p= details.dob
+
+    h3 Biography
+    p= details.biography
+
+    h3 Height
+    p= details.height_in_inches + ' inches (convert this to feet/inches)'
+
+    h3 Birthplace
+    p= details.birthplace
+
+    h3 Roles
+    if roles.length == 0
+      p What kind of actor has no roles?
+    else
+      each role in roles
+        p #{role.name} - #[a(href="/movie/#{role.id}") #{role.title}]
+

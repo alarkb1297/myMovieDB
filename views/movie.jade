@@ -1,0 +1,33 @@
+extends layout
+
+block content
+    h2.container-fluid Details
+
+        h3 Title
+        p= details.title
+
+        h3 Genre
+        p= details.genre
+
+        h3 Director
+        p= details.director_name
+
+        h3 Summary
+        p= details.summary
+
+        h3 Roles
+        if roles.length == 0
+            p No roles in this movie!
+        else
+            each role in roles
+                p #{role.name} - #[a(href="/actor/#{role.id}") #{role.actor}]
+
+        h3 Rating
+        p= details.metascore
+
+        h3 Year Released
+        p= details.release_year
+
+        h3 Trailer
+        iframe(width="560", height="315", src="https://www.youtube.com/embed/#{details.trailer}?rel=0",
+        frameborder="0", gesture="media", allow="encrypted-media", allowfullscreen)

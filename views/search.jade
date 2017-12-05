@@ -1,4 +1,26 @@
 extends layout
 
 block content
-  h1= title
+  h2.container-fluid Results
+
+    h3 Movies
+    if movies.length == 0
+      p No results found.
+    else
+      each movie in movies
+        p #[a(href="/movie/#{movie.movie_id}") #{movie.title}]
+
+    h3 Actors
+    if actors.length == 0
+      p No results found.
+    else
+      each actor in actors
+        p #[a(href="/actor/#{actor.actor_id}") #{actor.actor_name}]
+
+    h3 Roles
+    if roles.length == 0
+      p No results found.
+    else
+      each role in roles
+        p #{role.role_name}, played by #[a(href="/actor/#{role.actor_id}") #{role.actor_name}] in #[a(href="/movie/#{role.movie_id}") #{role.title}]
+
