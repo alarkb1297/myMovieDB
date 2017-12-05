@@ -22,6 +22,36 @@ router.post('/savemovie', auth, function (req, res, next) {
   // });
 });
 
+router.post('/insertMovie', function (req, res, next) {
+
+    var movie = {
+        "title" : req.body.title,
+        "director" : req.body.director,
+        "year" : req.body.year,
+        "genre" : req.body.genre,
+        "summary" : req.body.summary,
+        "trailer" : req.body.trailer
+    };
+
+    Movie.addMovie(movie, function (err, success) {
+        if (err) {
+            return res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        }
+
+        res.redirect('/movie/' + success);
+    })
+
+})
+
+router.get('/addMovie', function (req, res, next) {
+
+    res.render('addMovie', { title: 'MyMovieDB Add Movie'});
+
+});
+
 router.get('/:movie_id', function (req, res, next) {
   User.savedMovie(req.session.user.username, req.params.movie_id, function (err, isSaved) {
     if (err) {

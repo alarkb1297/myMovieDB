@@ -15,3 +15,16 @@ exports.getTopMovies = function(cb) {
       cb(null, result[0]);
     });
 }
+
+
+// Add movie to db
+exports.addMovie = function(movie, cb) {
+
+  db.query('call addMovie(?, ?, ?, ?, ?, ?)',
+      [movie.title, movie.director, movie.year, movie.genre, movie.summary, movie.trailer],
+      function (error, result, fields) {
+      if (error) return cb(error);
+      cb (null, result);
+  })
+
+}
