@@ -94,7 +94,7 @@ router.post('/login', function(req, res) {
             "isAdmin" : result
         };
 
-        res.redirect("/account");
+        res.redirect(req.get('referer'));
     });
   });
 });

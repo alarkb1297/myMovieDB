@@ -51,7 +51,7 @@ foreign key (movie_id) references movies (movie_id),
 foreign key (actor_id) references actor (actor_id)
 ) engine = innoDB;
 
-drop table if exists movie_user;
+
 CREATE TABLE movie_user (
 username VARCHAR(60) NOT NULL UNIQUE PRIMARY KEY,
 user_password VARCHAR(60) NOT NULL,
@@ -88,10 +88,11 @@ DROP PROCEDURE IF EXISTS search;
 DELIMITER $$
 CREATE PROCEDURE search(keywords VARCHAR(50), typ INT) BEGIN
 	IF typ = 0 THEN 
-		SELECT *-- m.title, m.movie_id
+		SELECT *
 		FROM movies m JOIN director d USING (director_id)
 		WHERE m.title LIKE CONCAT('%', keywords, '%')
-        OR d.director_name LIKE CONCAT('%', keywords, '%');
+        OR d.director_name LIKE CONCAT('%', keywords, '%')
+        OR m.genre LIKE CONCAT('%', keywords, '%');
 	ELSEIF typ = 1 THEN
 		SELECT actor_name, actor_id FROM actor
         WHERE actor_name LIKE CONCAT('%', keywords, '%');
@@ -138,7 +139,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS rate;
 DELIMITER $$
 CREATE PROCEDURE rate(m_id INT, val INT, user VARCHAR(60)) BEGIN
-	IF (SELECT * FROM ratings WHERE rating_source = user) > 0 THEN
+	IF (SELECT COUNT(*) FROM ratings WHERE rating_source = user AND movie_id = m_id) > 0 THEN
 		UPDATE ratings SET rating=val WHERE rating_source = user;
 	ELSE
 		INSERT INTO ratings (movie_id, rating_source, rating) VALUE
@@ -151,12 +152,14 @@ DROP PROCEDURE IF EXISTS update_rating;
 DELIMITER $$
 CREATE PROCEDURE update_rating(new_id INT) BEGIN
 	SET @num_reviews = (SELECT COUNT(rating_id) FROM ratings 
-		WHERE rating_source = 'user'
+		WHERE (rating_source != 'IMDB'
+        OR rating_source != 'Rotten Tomatos')
 		AND ratings.movie_id = new_id);
     
 	IF @num_reviews > 0 THEN 
 		SET @review_total = (SELECT SUM(rating) FROM ratings 
-			WHERE rating_source = 'user' 
+			WHERE (rating_source != 'IMDB'
+			OR rating_source != 'Rotten Tomatos')
 			AND ratings.movie_id = new_id);
         
 		SET  @average = @review_total / @num_reviews;
@@ -174,7 +177,7 @@ DROP TRIGGER IF EXISTS update_rating_insert;
 DELIMITER $$
 CREATE TRIGGER update_rating_insert
 AFTER INSERT ON ratings FOR EACH ROW BEGIN 
-CALL update_rating(NEW.movie_id);
+	CALL update_rating(NEW.movie_id);
 END$$
 DELIMITER ;
 
@@ -182,7 +185,7 @@ DROP TRIGGER IF EXISTS update_rating_update;
 DELIMITER $$
 CREATE TRIGGER update_rating_update
 AFTER UPDATE ON ratings FOR EACH ROW BEGIN 
-CALL update_rating(NEW.movie_id);
+	CALL update_rating(NEW.movie_id);
 END$$
 DELIMITER ;
 
@@ -234,7 +237,7 @@ END$$
 DELIMITER ;
 
 
-DROP PROCEDURE IF EXISTS find_num_saved_movies; 
+DROP PROCEDURE IF EXISTS find_num_saved_movies;
 DELIMITER $$
 
 CREATE PROCEDURE find_num_saved_movies(mov_id INT) BEGIN
@@ -247,7 +250,7 @@ WHERE mov_id = movie_id
 AND saved_movies.movie_id = mov_id
 GROUP BY movie_user.username;
 
-ELSE 
+ELSE
 
 SELECT 0 AS num_saved;
 
@@ -272,7 +275,31 @@ GROUP BY movies.movie_id, title, results.num_seen
 ORDER BY results.num_seen DESC;
 
 END $$
+DELIMITER ;
 
+DROP PROCEDURE IF EXISTS add_movie;
+DELIMITER $$
+CREATE PROCEDURE add_movie(
+	title VARCHAR(60),
+    director_n VARCHAR(60),
+    ryear YEAR,
+    genre VARCHAR(60),
+    summary VARCHAR(2000),
+    trailer VARCHAR(200)) BEGIN
+	
+    DECLARE d_id INT;
+    
+    IF (SELECT COUNT(*) FROM director WHERE director_name = director_n) > 0 THEN
+		SET d_id = (SELECT director_id FROM director WHERE director_name = director_n
+	ELSE
+		INSERT INTO director (director_name) VALUE (director_n);
+        SET d_id = LAST_INSERT_ID();
+	END IF;
+    
+    INSERT INTO movies (title, director_id, release_year, genre, summary, trailer) VALUE
+			(title, d_id, ryear, genre, summary, trailer);
+	SELECT LAST_INSERT_ID();
+END$$
 DELIMITER ;
 
 
@@ -310,5 +337,7 @@ insert into ratings (movie_id, rating_source, rating) VALUES
 insert into roles (role_name, actor_id, movie_id) VALUES
 ("Singer", 2, 1),
 ("John", 1, 1);
+
+
 
 SELECT is_admin from movie_user where username = "test";

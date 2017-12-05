@@ -8,6 +8,14 @@ exports.get = function(movie_id, cb) {
   });
 }
 
+exports.rate = function(movie_id, value, username, cb) {
+  db.query('CALL rate(?, ?, ?)', [movie_id, value, username], function (error, result, fields) {
+    console.log(error);
+    if (error) return cb(error);
+    cb(null, true);
+  });
+}
+
 // get saved movies
 exports.getTopMovies = function(cb) {
     db.query('call get_popular_movies()', function (error, result, fields) {
