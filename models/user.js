@@ -17,7 +17,7 @@ exports.register = function(username, password, cb) {
 // Check user credentials in the database to login
 exports.login = function(username, password, cb) {
   db.query('SELECT * FROM movie_user WHERE username = ?', [username], function (error, result, fields) {
-    if (error) cb(error);
+    if (error) return cb(error);
 
     if (result.length > 0) {
       if (result[0].user_password == hash(password)) {
@@ -32,3 +32,20 @@ exports.login = function(username, password, cb) {
 }
 
 // exports.changePassword
+
+exports.savedMovie = function(username, movie_id, cb) {
+  db.query('SELECT check_if_saved(?, ?) AS isSaved', [username, movie_id], function (error, result, fields) {
+    if (error) return cb(error);
+
+    cb(null, !!result[0].isSaved);
+  });
+}
+
+exports.saveMovie = function(username, movie_id, cb) {
+  db.query('CALL toggle_save_movie(?, ?)', [username, movie_id], function (error, result, fields) {
+    if (error) return cb(error);
+
+    // Simply return true if the movie was added or removed
+    cb(null, true);
+  });
+}

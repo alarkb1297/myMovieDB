@@ -2,12 +2,23 @@ extends layout
 
 block content
     h2.container-fluid Details
+        if (session.user)
+            form#formSaveMovie(name="saveMovie", method="post", action="/movie/savemovie")
+                button#btnSubmit.btn.btn-success(name="id", type="submit", value=id)= isSaved ? "Unsave" : "I've seen this!"
+        else
+            h3 Log in to save, rate, and review!
 
         h3 Title
         p= details.title
 
         h3 Genre
         p= details.genre
+
+        h3 Metascore
+        p= details.metascore
+
+        h3 User Rating
+        p= details.user_rating
 
         h3 Director
         p= details.director_name
