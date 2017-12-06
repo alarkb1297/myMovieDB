@@ -102,8 +102,6 @@ CREATE PROCEDURE search(keywords VARCHAR(50), typ INT) BEGIN
         JOIN actor a USING (actor_id)
         JOIN movies m USING (movie_id)
         WHERE role_name LIKE CONCAT('%', keywords, '%');
-	-- ELSE 
-		-- throw some error I guess
 	END IF;
 END$$
 DELIMITER ;
@@ -198,7 +196,6 @@ CREATE PROCEDURE toggle_save_movie(user VARCHAR(60), m_id INT) BEGIN
 	ELSE 
 		INSERT INTO saved_movies (username, movie_id) VALUE (user, m_id);
 	END IF;
-	-- If we end up storing view counts, update them here? or trigger?
 END$$
 DELIMITER ;
 
@@ -222,12 +219,8 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS user_review_movie;
 DELIMITER $$
 CREATE  PROCEDURE user_review_movie(uname VARCHAR(60), body VARCHAR(2000), mov_id INT) BEGIN
-	IF (SELECT COUNT(movie_id) FROM movies, movie_user
-			WHERE movie_id = mov_id
-			AND uname = movie_user.username
-			GROUP BY username)
-		> 0 THEN 
-	INSERT INTO reviews (movie_id, user_id, review_text) VALUES (mov_id, uname, body);
+	IF (check_if_saved(uname, mov_id)) THEN 
+		INSERT INTO reviews (movie_id, user_id, review_text) VALUES (mov_id, uname, body);
 	ELSE 
 		SIGNAL SQLSTATE 'ERROR' SET
 		MESSAGE_TEXT = 'Movie not in users saved movies',
@@ -239,41 +232,32 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS find_num_saved_movies;
 DELIMITER $$
-
 CREATE PROCEDURE find_num_saved_movies(mov_id INT) BEGIN
-IF EXISTS (SELECT COUNT(DISTINCT movie_user.username) FROM movie_user, saved_movies
-WHERE mov_id = movie_id
-AND saved_movies.movie_id = mov_id
-GROUP BY movie_user.username) THEN
-SELECT COUNT(DISTINCT movie_user.username) AS num_saved FROM movie_user, saved_movies
-WHERE mov_id = movie_id
-AND saved_movies.movie_id = mov_id
-GROUP BY movie_user.username;
-
-ELSE
-
-SELECT 0 AS num_saved;
-
-END IF;
-
+	IF EXISTS (SELECT COUNT(DISTINCT movie_user.username) FROM movie_user, saved_movies
+			WHERE mov_id = movie_id
+			AND saved_movies.movie_id = mov_id
+			GROUP BY movie_user.username) THEN
+		SELECT COUNT(DISTINCT movie_user.username) AS num_saved FROM movie_user, saved_movies
+		WHERE mov_id = movie_id
+		AND saved_movies.movie_id = mov_id
+		GROUP BY movie_user.username;
+	ELSE
+		SELECT 0 AS num_saved;
+	END IF;
 END$$
 DELIMITER ;
-
 
 DROP PROCEDURE IF EXISTS get_popular_movies;
 DELIMITER $$
 CREATE PROCEDURE get_popular_movies() BEGIN
-
-
-SELECT movies.movie_id, title, results.num_seen FROM
-(SELECT COUNT(movie_id) AS num_seen, movie_id AS mvid FROM saved_movies
-GROUP BY movie_id
-ORDER BY COUNT(movie_id) DESC
-LIMIT 3) results, movies
-WHERE movies.movie_id = mvid
-GROUP BY movies.movie_id, title, results.num_seen
-ORDER BY results.num_seen DESC;
-
+	SELECT movies.movie_id, title, results.num_seen FROM
+	(SELECT COUNT(movie_id) AS num_seen, movie_id AS mvid FROM saved_movies
+	GROUP BY movie_id
+	ORDER BY COUNT(movie_id) DESC
+	LIMIT 3) results, movies
+	WHERE movies.movie_id = mvid
+	GROUP BY movies.movie_id, title, results.num_seen
+	ORDER BY results.num_seen DESC;
 END $$
 DELIMITER ;
 
@@ -328,7 +312,7 @@ CREATE PROCEDURE edit_movie(
 	END IF;
     
     UPDATE movies SET title=title, director_id=d_id, release_year=ryear, 
-		genre=genre, trailer=trailer WHERE movie_id = m_id;
+		genre=genre, summary=summary, trailer=trailer WHERE movie_id = m_id;
     
     -- If the original director has no films, just delete them.
     IF (SELECT COUNT(*) FROM movies JOIN director USING (director_id)
@@ -390,3 +374,4 @@ insert into roles (role_name, actor_id, movie_id) VALUES
 ("James Franco", 6, 7);
 
 update movie_user set is_admin=1 where username = "admin";
+select * from movie_user;

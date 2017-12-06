@@ -46,3 +46,10 @@ exports.editMovie = function(movie, cb) {
   );
 }
 
+exports.deleteMovie = function(movie, cb) {
+  db.query('DELETE FROM movies WHERE movie_id = ?', [movie], function (error, result, fields) {
+      if (error) return cb(error);
+      cb (null, true);
+    }
+  );
+}

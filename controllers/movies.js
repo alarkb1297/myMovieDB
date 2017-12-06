@@ -36,7 +36,7 @@ router.get('/:movie_id/edit', auth.isAdmin, function (req, res, next) {
   });
 });
 
-router.post('/updateMovie', function (req, res, next) {
+router.post('/updateMovie', auth.isAdmin, function (req, res, next) {
   var newValues = {
     "id" : req.body.id,
     "title" : req.body.title,
@@ -56,6 +56,19 @@ router.post('/updateMovie', function (req, res, next) {
     }
 
     res.redirect('/movie/' + success);
+  });
+});
+
+router.post('/deleteMovie', auth.isAdmin, function (req, res, next) {
+  Movie.deleteMovie(req.body.id, function (err, success) {
+    if (err) {
+      return res.send({
+        "code": 400,
+        "failed": "error ocurred"
+      })
+    }
+
+    res.redirect('/');
   });
 });
 
@@ -83,7 +96,7 @@ router.post('/ratemovie', auth.loggedIn, function (req, res, next) {
   });
 });
 
-router.post('/insertMovie', function (req, res, next) {
+router.post('/insertMovie', auth.isAdmin, function (req, res, next) {
     var movie = {
         "title" : req.body.title,
         "director" : req.body.director,

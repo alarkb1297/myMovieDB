@@ -11,3 +11,5 @@ block content
       input#inputSummary.form-control(type="text", placeholder="summary", name="summary" value=values.summary)
       input#inputTrailer.form-control(type="text", placeholder="trailer", name="trailer" value=values.trailer)
       button#btnSubmit.btn.btn-success(name="id", type="submit" value=id) Update
+  form#deleteMovie(name="deleteMovie", method="post", action="/movie/deleteMovie")
+    button#btnDelete.btn.btn-danger(name="id", type="submit" value=id) Delete
