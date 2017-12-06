@@ -84,6 +84,18 @@ router.post('/savemovie', auth.loggedIn, function (req, res, next) {
   });
 });
 
+router.post('/reviewMovie', auth.loggedIn, function (req, res, next) {
+    Movie.addReview(req.body.id, req.session.user.username, req.body.review, function (err, success) {
+        if (err) {
+            return res.send({
+                "code": 400,
+                "failed": "error ocurred"
+            })
+        }
+        res.redirect(req.get('referer'));
+    });
+});
+
 router.post('/ratemovie', auth.loggedIn, function (req, res, next) {
   Movie.rate(req.body.id, req.body.rating, req.session.user.username, function (err, success) {
     if (err) {
@@ -175,11 +187,27 @@ router.get('/:movie_id', function (req, res, next) {
       });
     }
 
-    res.render('movie', {
-      title: 'MyMovieDB Details Page',
-      details: results[0][0],
-      roles: roles,
-      id: req.params.movie_id
+    Movie.getReviews(req.params.movie_id, function (err, results2) {
+
+        var reviews = [];
+
+        results2.forEach(function (entry) {
+            var text = entry.review_text;
+            var username = entry.username;
+
+            reviews.push({
+                "text" : text,
+                "username" : username
+            })
+        });
+
+        res.render('movie', {
+            title: 'MyMovieDB Details Page',
+            details: results[0][0],
+            roles: roles,
+            id: req.params.movie_id,
+            reviews: reviews
+        });
     });
   });
 });

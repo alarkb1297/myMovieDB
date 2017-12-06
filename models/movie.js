@@ -50,6 +50,20 @@ exports.deleteMovie = function(movie, cb) {
   db.query('DELETE FROM movies WHERE movie_id = ?', [movie], function (error, result, fields) {
       if (error) return cb(error);
       cb (null, true);
-    }
-  );
+    });
+}
+
+exports.getReviews = function (movie_id, cb) {
+    db.query('select review_text, username from reviews where movie_id = ?', [movie_id], function (error, result, fields) {
+        if (error) return cb(error);
+        cb (null, result);
+    })
+}
+
+exports.addReview = function (movie_id, username, review, cb) {
+    db.query('insert into reviews (movie_id, username, review_text) value (?, ?, ?)', [movie_id, username, review],
+        function (error, result, fields) {
+        if (error) return cb(error);
+        cb (null, true);
+    });
 }

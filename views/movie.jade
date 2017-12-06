@@ -5,7 +5,7 @@ block content
         if (session.user)
             form#formSaveMovie(name="saveMovie", method="post", action="/movie/savemovie")
                 button#btnSubmit.btn.btn-success(name="id", type="submit", value=id)= locals.isSaved ? "Unsave" : "I've seen this!"
-            p How would you rate this movie?
+            h4 How would you rate this movie?
             form#formRateMovie(name="rating", method="post", action="/movie/ratemovie")
                 input(name="rating", type="number", min="0", max="100", step="1")
                 button#btnSubmit.btn.btn-success(name="id", type="submit", value=id) Rate
@@ -46,3 +46,16 @@ block content
         h3 Trailer
         iframe(width="560", height="315", src="https://www.youtube.com/embed/#{details.trailer}?rel=0",
         frameborder="0", gesture="media", allow="encrypted-media", allowfullscreen)
+
+        h3 Reviews
+        if (session.user)
+            form#formReviewMovie(name="reviewMovie", method="post", action="/movie/reviewMovie")
+                .form-a
+                    input#inputReview.form-control(type="text", placeholder="Review", name="review")
+                    button#btnSubmit.btn.btn-success(name="id", type="submit", value=id) Review
+
+        if reviews.length == 0
+            p No reviews for this movie yet
+        else
+            each review in reviews
+                p user [#{review.username}] wrote: #{review.text}
