@@ -280,12 +280,12 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS add_movie;
 DELIMITER $$
 CREATE PROCEDURE add_movie(
-	title VARCHAR(60),
-    director_n VARCHAR(60),
-    ryear YEAR,
-    genre VARCHAR(60),
-    summary VARCHAR(2000),
-    trailer VARCHAR(200)) BEGIN
+		title VARCHAR(60),
+		director_n VARCHAR(60),
+		ryear YEAR,
+		genre VARCHAR(60),
+		summary VARCHAR(2000),
+		trailer VARCHAR(200)) BEGIN
 	
     DECLARE d_id INT;
     
@@ -302,42 +302,91 @@ CREATE PROCEDURE add_movie(
 END$$
 DELIMITER ;
 
-select * from movies;
+DROP PROCEDURE IF EXISTS edit_movie;
+DELIMITER $$
+CREATE PROCEDURE edit_movie(
+		m_id INT,
+		title VARCHAR(60),
+		director_n VARCHAR(60),
+		ryear YEAR,
+		genre VARCHAR(60),
+		summary VARCHAR(2000),
+		trailer VARCHAR(200)) BEGIN
+	
+    DECLARE old_director INT DEFAULT (SELECT director_id
+    FROM director JOIN movies USING (director_id)
+    WHERE movie_id = m_id);
+    
+    DECLARE d_id INT;
+    
+    -- see if the old director has any other films
+    IF (SELECT COUNT(*) FROM director WHERE director_name = director_n) > 0 THEN
+		SET d_id = (SELECT director_id FROM director WHERE director_name = director_n);
+	ELSE
+		INSERT INTO director (director_name) VALUE (director_n);
+        SET d_id = LAST_INSERT_ID();
+	END IF;
+    
+    UPDATE movies SET title=title, director_id=d_id, release_year=ryear, 
+		genre=genre, trailer=trailer WHERE movie_id = m_id;
+    
+    -- If the original director has no films, just delete them.
+    IF (SELECT COUNT(*) FROM movies JOIN director USING (director_id)
+			WHERE director_id = old_director) = 0 THEN
+		DELETE FROM director WHERE director_id = old_director;
+	END IF;
+END$$
+DELIMITER ;
 
-insert into actor (actor_name, dob) VALUES
-("Jim Carrey", NOW()),
-("Mariah Carey", NOW()),
-("Meghan Fox", NOW()),
-("Christian Bale", NOW()),
-("Mark Hamill", NOW());
+
+insert into actor (actor_name, dob, biography, height_in_inches, birthplace) VALUES
+("Jim Carrey", '1962-01-17', "Makes people laugh", 74, "Newmarket, Ontario"),
+("Megan Fox", '1986-06-16', "Pretty girl in action movies", 64, "Rockwood, Tennessee"),
+("Christian Bale", '1974-01-30', "Not your average bale of hay", 72, "Haverfordwest, Pembrokeshire"),
+("Mark Hamill", '1951-09-25', "Vader, I am your son!", 69, "Oakland, California"),
+("Seth Rogan", '1982-04-15', "Has a funny laugh", 71, "Vancouver, British Columbia"),
+("James Franco", '1978-04-19', "Had to cut his arm off that one time", 71, "Palo Alto, California"),
+("Shia LaBeouf", '1986-06-11', "Actual cannibal", 69, "Los Angeles, California");
 
 insert into director (director_name, dob) VALUES
-("Michael Bay", NOW()),
-("J.J. Abrams", NOW()),
-("Christopher Nolan", NOW());
+("Michael Bay", '1965-02-17'),
+("J.J. Abrams", '1966-06-27'),
+("Christopher Nolan", '1970-07-30'),
+("Peter Weir", '1944-08-21'),
+("David Gordon Green", '1975-04-09'),
+("Evan Goldberg", '1975-04-20');
 
-insert into movies (title, director_id, release_year, metascore, genre, trailer) VALUES
-("John and the Singer", 1, 2020, 100, "action romance", "9LW12NkQtCY"),
-("Transformers", 1, 2007, 0, "action", "zX81c2vycKo"),
-("Batman Begins", 3, 2005, 0, "action", "neY2xVmOfUM"),
-("Star Wars: The Force Awakens", 2, 2015, 0, "adventure", "sGbxmsDFVnE");
+insert into movies (title, director_id, release_year, metascore, genre, summary, trailer) VALUES
+("Transformers", 1, 2007, 61, "action", "Alien robots turn into cars", "zX81c2vycKo"),
+("Batman Begins", 3, 2005, 70, "action", "Half-man-half-bat fights crime", "neY2xVmOfUM"),
+("Star Wars: The Force Awakens", 2, 2015, 81, "adventure", "They remade the 4th Star Wars", "sGbxmsDFVnE"),
+("The Truman Show", 4, 1998, 90, "drama", "Guy lives in a TV show", "loTIzXAS7v4"),
+("Pineapple Express", 5, 2008, 64, "comedy", "A lot of illegal stuff goes on", "BWZt4v6b1hI"),
+("The Interview", 6, 2014, 52, "comedy", "North Korea gets mad", "DkJA1rb8Nxo"),
+("This Is the End", 6, 2013, 67, "comedy", "Party till you drop", "Yma-g4gTwlE");
 
 insert into ratings (movie_id, rating_source, rating) VALUES
-(1, "Google", 99),
-(2, "user", 5),
-(2, "user", 7),
-(2, "user", 2),
-(3, "Rotten Tomatoes", 90),
-(3, "user", 9),
-(4, "IMDB", 94),
-(4, "user", 8),
-(4, "user", 7),
-(4, "user", 9);
+(1, "user", 99),
+(2, "user", 53),
+(3, "user", 76),
+(4, "user", 22),
+(5, "Rotten Tomatoes", 90),
+(5, "user", 35),
+(6, "user", 91),
+(7, "IMDB", 94),
+(7, "user", 98);
 
 insert into roles (role_name, actor_id, movie_id) VALUES
-("Singer", 2, 1),
-("John", 1, 1);
+("Mikaela Banes", 2, 1),
+("Sam Witwicky", 7, 1),
+("Bruce Wayne / Batman", 3, 2),
+("Luke Skywalker", 4, 3),
+("Truman Burbank", 1, 4),
+("Dale Denton", 5, 5),
+("Saul Silver", 6, 5),
+("Aaron Rapaport", 5, 6),
+("Dave Skylark", 6, 6),
+("Seth Rogan", 5, 7),
+("James Franco", 6, 7);
 
-
-
-SELECT is_admin from movie_user where username = "test";
+update movie_user set is_admin=1 where username = "admin";

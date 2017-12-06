@@ -4,22 +4,20 @@ var User = require('../models/user');
 var auth = require('../middlewares/auth');
 
 /* GET accounts page */
-router.get('/account', auth, function (req, res, next) {
+router.get('/account', auth.loggedIn, function (req, res, next) {
 
   User.getSavedMovies(req.session.user.username, function (err, result) {
-      if (err) {
-          return res.send({
-              "code": 400,
-              "failed": "error occurred"
-          });
-      }
-      else {
-        var movies = result;
-      }
+    if (err) {
+      return res.send({
+        "code": 400,
+        "failed": "error occurred"
+      });
+    } else {
+      var movies = result;
+    }
 
       res.render('account', { title: 'MyMovieDB', movies: movies});
   });
-
 });
 
 /* GET register page */
@@ -74,7 +72,6 @@ router.post('/login', function(req, res) {
           return res.redirect((req.header('Referer') || '/') + "?retry=2");
         case "User not found":
           return res.redirect((req.header('Referer') || '/') + "?retry=3");
-          // https://stackoverflow.com/questions/12442716/res-redirectback-with-parameters
         default:
           return res.send({
             "code": 400,
@@ -100,7 +97,7 @@ router.post('/login', function(req, res) {
 });
 
 /* GET logout user */
-router.get('/logout', auth, function(req, res) {
+router.get('/logout', auth.loggedIn, function(req, res) {
   delete req.session.user;
   res.redirect('/');
 });

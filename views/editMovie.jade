@@ -1,0 +1,13 @@
+extends layout
+
+block content
+
+  form#formEditMovie(name="editMovie", method="post", action="/movie/updateMovie")
+    .form-a
+      input#inputTitle.form-control(type="text", placeholder="title", name="title" value=values.title)
+      input#inputDirector.form-control(type="text", placeholder="director", name="director" value=values.director)
+      input#inputReleaseYear.form-control(type="text", placeholder="year", name="year" value=values.year)
+      input#inputGenre.form-control(type="text", placeholder="genre", name="genre" value=values.genre)
+      input#inputSummary.form-control(type="text", placeholder="summary", name="summary" value=values.summary)
+      input#inputTrailer.form-control(type="text", placeholder="trailer", name="trailer" value=values.trailer)
+      button#btnSubmit.btn.btn-success(name="id", type="submit" value=id) Update

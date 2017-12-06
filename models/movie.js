@@ -27,13 +27,22 @@ exports.getTopMovies = function(cb) {
 
 // Add movie to db
 exports.addMovie = function(movie, cb) {
-
   db.query('call add_movie(?, ?, ?, ?, ?, ?)',
-      [movie.title, movie.director, movie.year, movie.genre, movie.summary, movie.trailer],
-      function (error, result, fields) {
+    [movie.title, movie.director, movie.year, movie.genre, movie.summary, movie.trailer],
+    function (error, result, fields) {
       if (error) return cb(error);
-      console.log(result[0]);
       cb (null, result[0][0].movie_id);
-  })
-
+    }
+  );
 }
+
+exports.editMovie = function(movie, cb) {
+  db.query('call edit_movie(?, ?, ?, ?, ?, ?, ?)',
+    [movie.id, movie.title, movie.director, movie.year, movie.genre, movie.summary, movie.trailer],
+    function (error, result, fields) {
+      if (error) return cb(error);
+      cb (null, movie.id);
+    }
+  );
+}
+

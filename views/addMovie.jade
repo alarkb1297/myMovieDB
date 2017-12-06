@@ -2,7 +2,7 @@ extends layout
 
 block content
 
-    form#formLogin(name="addMovie", method="post", action="/movie/insertMovie")
+    form#formAddMovie(name="addMovie", method="post", action="/movie/insertMovie")
         .form-a
             input#inputTitle.form-control(type="text", placeholder="title", name="title")
             input#inputDirector.form-control(type="text", placeholder="director", name="director")

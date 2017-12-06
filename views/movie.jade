@@ -4,15 +4,16 @@ block content
     h2.container-fluid Details
         if (session.user)
             form#formSaveMovie(name="saveMovie", method="post", action="/movie/savemovie")
-                button#btnSubmit.btn.btn-success(name="id", type="submit", value=id)= isSaved ? "Unsave" : "I've seen this!"
+                button#btnSubmit.btn.btn-success(name="id", type="submit", value=id)= locals.isSaved ? "Unsave" : "I've seen this!"
             p How would you rate this movie?
             form#formRateMovie(name="rating", method="post", action="/movie/ratemovie")
                 input(name="rating", type="number", min="0", max="100", step="1")
                 button#btnSubmit.btn.btn-success(name="id", type="submit", value=id) Rate
+            if (session.user.isAdmin)
+                form#formEditMovie(name="editMovie", method="get", action=id + "/edit")
+                    button#btnSubmit.btn.btn-warning(type="submit") Edit Movie
         else
             h3 Log in to save, rate, and review!
-
-        a(href="#{id}/edit")
 
         h3 Title
         p= details.title
@@ -38,9 +39,6 @@ block content
         else
             each role in roles
                 p #{role.name} - #[a(href="/actor/#{role.id}") #{role.actor}]
-
-        h3 Rating
-        p= details.metascore
 
         h3 Year Released
         p= details.release_year
