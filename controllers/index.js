@@ -10,21 +10,22 @@ router.use('/movie', require('./movies'));
 router.use('/actor', require('./actors'));
 router.use('/', require('./search'));
 
-// GET home page.
-router.get('/', function (req, res, next) {
-  var today = new Date();
-  var mm = today.getMonth() + 1;
-  var dd = today.getDate();
-
-  var tomorrow = [today.getFullYear(),
-    (mm>9 ? '' : '0') + mm,
-    (dd>9 ? '' : '0') + (dd + 1)
-  ].join('-');
-
-  today = [today.getFullYear(),
+function formatDate(d) {
+  var dt = new Date(d);
+  var mm = dt.getMonth() + 1;
+  var dd = dt.getDate();
+  return [dt.getFullYear(),
     (mm>9 ? '' : '0') + mm,
     (dd>9 ? '' : '0') + dd
   ].join('-');
+}
+
+// GET home page.
+router.get('/', function (req, res, next) {
+  var today = new Date();
+  var tomorrow = new Date().setDate(today.getDate() + 1);
+  today = formatDate(today);
+  tomorrow = formatDate(tomorrow);
 
   var limit = req.query.limit ? req.query.limit : 5;
   var startDate = req.query.startDate ? req.query.startDate : today;
@@ -33,10 +34,7 @@ router.get('/', function (req, res, next) {
   Movies.getTopMovies(limit, startDate, endDate,
     function (err, result) {
       if (err) {
-        return res.send({
-          "code": 400,
-          "failed": "error occurred"
-        });
+        return next(err);
       } else {
         var movies = result;
       }

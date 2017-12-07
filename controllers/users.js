@@ -8,10 +8,7 @@ router.get('/account', auth.loggedIn, function (req, res, next) {
 
   User.getSavedMovies(req.session.user.username, function (err, result) {
     if (err) {
-      return res.send({
-        "code": 400,
-        "failed": "error occurred"
-      });
+      return next(err);
     } else {
       var movies = result;
     }
@@ -41,10 +38,7 @@ router.post('/adduser', function(req,res) {
       if (err.code == "ER_DUP_ENTRY") {
         return res.redirect("register?retry=1");
       } else {
-        return res.send({
-          "code": 400,
-          "failed": "error ocurred"
-        })
+        return next(err);
       }
     }
 
@@ -73,18 +67,12 @@ router.post('/login', function(req, res) {
         case "User not found":
           return res.redirect((req.header('Referer') || '/') + "?retry=3");
         default:
-          return res.send({
-            "code": 400,
-            "failed": "error occurred"
-          });
+          return next(err);
       }
     }
     User.isAdmin(uname, function (err, result) {
         if (err) {
-            return res.send({
-                "code": 400,
-                "failed": "error occurred"
-            })
+          return next(err);
         }
         req.session.user = {
             "username" : uname,

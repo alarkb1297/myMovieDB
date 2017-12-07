@@ -10,8 +10,7 @@ block content
                 input(name="rating", type="number", min="0", max="100", step="1")
                 button#btnSubmit.btn.btn-success(name="id", type="submit", value=id) Rate
             if (session.user.isAdmin)
-                form#formEditMovie(name="editMovie", method="get", action=id + "/edit")
-                    button#btnSubmit.btn.btn-warning(type="submit") Edit Movie
+                a.btn.btn-warning(href=id + "/edit") Edit Movie
                 form#formAddRole(name="addRole", method="get", action=id + "/addRole")
                     button#btnSubmit.btn.btn-warning(type="submit") Add Role
         else
