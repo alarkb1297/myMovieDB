@@ -379,7 +379,7 @@ insert into ratings (movie_id, rating_source, rating) VALUES
 insert into roles (role_name, actor_id, movie_id) VALUES
 ("Mikaela Banes", 2, 1),
 ("Sam Witwicky", 7, 1),
-("Bruce Wayne / Batman", 3, 2),
+("Bruce Wayne and Batman", 3, 2),
 ("Luke Skywalker", 4, 3),
 ("Truman Burbank", 1, 4),
 ("Dale Denton", 5, 5),
