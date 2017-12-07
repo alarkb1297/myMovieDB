@@ -27,6 +27,9 @@ block content
         h3 User Rating
         p= details.user_rating
 
+        h3 Views
+        p= details.view_count
+
         h3 Director
         p= details.director_name
 
@@ -51,11 +54,11 @@ block content
         if (session.user)
             form#formReviewMovie(name="reviewMovie", method="post", action="/movie/reviewMovie")
                 .form-a
-                    input#inputReview.form-control(type="text", placeholder="Review", name="review")
+                    textarea#inputReview.form-control(placeholder="Review", name="review")
                     button#btnSubmit.btn.btn-success(name="id", type="submit", value=id) Review
 
         if reviews.length == 0
             p No reviews for this movie yet
         else
             each review in reviews
-                p user [#{review.username}] wrote: #{review.text}
+                p #{review.username} wrote: #{review.text}

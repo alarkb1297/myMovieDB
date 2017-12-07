@@ -11,6 +11,14 @@ html(lang="en")
       form#formSearch(name="search", method="get", action="/search")
         .form-inline
             input#inputQuery.form-control(type="text", placeholder="Search", name="search")
+            select#selectSortMode.form-control(name="sortmode")
+              option(value=1, selected="selected") Alphabetically
+              option(value=2) By Rating
+              option(value=3) By Popularity
+              option(value=4) By Release Year
+            select#selectSortOrder.form-control(name="sortorder")
+              option(value=1, selected="selected") Ascending
+              option(value=2) Descending
       if session.user
         a(href="/account") #{session.user.username}
         form#formLogout(name="logout", method="get", action="/logout")

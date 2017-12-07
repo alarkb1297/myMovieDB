@@ -12,21 +12,43 @@ router.use('/', require('./search'));
 
 // GET home page.
 router.get('/', function (req, res, next) {
+  var today = new Date();
+  var mm = today.getMonth() + 1;
+  var dd = today.getDate();
 
-    Movies.getTopMovies(function (err, result) {
-        if (err) {
-            return res.send({
-                "code": 400,
-                "failed": "error occurred"
-            });
-        }
-        else {
-            var movies = result;
-        }
+  var tomorrow = [today.getFullYear(),
+    (mm>9 ? '' : '0') + mm,
+    (dd>9 ? '' : '0') + (dd + 1)
+  ].join('-');
 
-        res.render('index', { title: 'MyMovieDB', movies: movies, retry: req.query.retry});
-    });
+  today = [today.getFullYear(),
+    (mm>9 ? '' : '0') + mm,
+    (dd>9 ? '' : '0') + dd
+  ].join('-');
 
+  var limit = req.query.limit ? req.query.limit : 5;
+  var startDate = req.query.startDate ? req.query.startDate : today;
+  var endDate = req.query.endDate ? req.query.endDate : tomorrow;
+
+  Movies.getTopMovies(limit, startDate, endDate,
+    function (err, result) {
+      if (err) {
+        return res.send({
+          "code": 400,
+          "failed": "error occurred"
+        });
+      } else {
+        var movies = result;
+      }
+
+      res.render('index', {
+        title: 'MyMovieDB',
+        movies: movies,
+        retry: req.query.retry,
+        today: today,
+        tomorrow: tomorrow
+      });
+  });
 });
 
 module.exports = router;

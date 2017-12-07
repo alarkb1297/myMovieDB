@@ -17,8 +17,8 @@ exports.rate = function(movie_id, value, username, cb) {
 }
 
 // get saved movies
-exports.getTopMovies = function(cb) {
-    db.query('call get_popular_movies()', function (error, result, fields) {
+exports.getTopMovies = function(limit, startDate, endDate, cb) {
+    db.query('call get_popular_movies(?, ?, ?)', [limit, startDate, endDate], function (error, result, fields) {
       if (error) return cb(error);
       cb(null, result[0]);
     });

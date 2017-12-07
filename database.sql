@@ -19,6 +19,7 @@ director_id INT NOT NULL,
 release_year YEAR NOT NULL,
 metascore INT NOT NULL DEFAULT 0,
 user_rating INT NOT NULL DEFAULT 0,
+view_count INT NOT NULL DEFAULT 0,
 genre VARCHAR(60) NOT NULL,
 summary VARCHAR(2000),
 trailer VARCHAR(200),
@@ -51,21 +52,19 @@ foreign key (movie_id) references movies (movie_id),
 foreign key (actor_id) references actor (actor_id)
 ) engine = innoDB;
 
-
 CREATE TABLE movie_user (
 username VARCHAR(60) NOT NULL UNIQUE PRIMARY KEY,
 user_password VARCHAR(60) NOT NULL,
 is_admin int not null default 0
 ) ENGINE = innoDB;
 
-
 CREATE TABLE saved_movies (
 username VARCHAR(60) NOT NULL, 
 movie_id INT NOT NULL,
+save_time DATETIME DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY(username) REFERENCES movie_user (username),
 FOREIGN KEY(movie_id) REFERENCES movies (movie_id)
 ) ENGINE = innoDB;
-
 
 CREATE TABLE reviews (
 review_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -75,6 +74,8 @@ review_text VARCHAR(2000) NOT NULL,
 FOREIGN KEY(username) REFERENCES movie_user (username),
 FOREIGN KEY(movie_id) REFERENCES movies (movie_id)
 ) ENGINE = innoDB;
+
+
 
 
 DROP PROCEDURE IF EXISTS register;
@@ -92,7 +93,8 @@ CREATE PROCEDURE search(keywords VARCHAR(50), typ INT) BEGIN
 		FROM movies m JOIN director d USING (director_id)
 		WHERE m.title LIKE CONCAT('%', keywords, '%')
         OR d.director_name LIKE CONCAT('%', keywords, '%')
-        OR m.genre LIKE CONCAT('%', keywords, '%');
+        OR m.genre LIKE CONCAT('%', keywords, '%')
+        OR m.release_year LIKE CONCAT('%', keywords, '%');
 	ELSEIF typ = 1 THEN
 		SELECT actor_name, actor_id FROM actor
         WHERE actor_name LIKE CONCAT('%', keywords, '%');
@@ -110,7 +112,7 @@ DROP PROCEDURE IF EXISTS movie_info;
 DELIMITER $$
 CREATE PROCEDURE movie_info(mid INT) BEGIN
 	SELECT m.title, m.genre, d.director_name, m.summary, 
-    m.metascore, m.user_rating, m.release_year, m.trailer,
+    m.metascore, m.user_rating, m.view_count, m.release_year, m.trailer,
     (SELECT GROUP_CONCAT(r.role_name, ':', a.actor_name, '/', a.actor_id)
 		FROM roles r JOIN actor a USING (actor_id)
         WHERE r.movie_id = mid
@@ -190,11 +192,13 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS toggle_save_movie;
 DELIMITER $$
 CREATE PROCEDURE toggle_save_movie(user VARCHAR(60), m_id INT) BEGIN
--- maybe disallow unsaving if the user reviewed it?
 	IF (SELECT check_if_saved(user, m_id)) THEN
 		DELETE FROM saved_movies WHERE username = user AND movie_id = m_id;
+        UPDATE movies SET view_count=view_count-1 WHERE movie_id = m_id;
+        -- Perform a check to make sure it's not negative?
 	ELSE 
 		INSERT INTO saved_movies (username, movie_id) VALUE (user, m_id);
+		UPDATE movies SET view_count=view_count+1 WHERE movie_id = m_id;
 	END IF;
 END$$
 DELIMITER ;
@@ -215,7 +219,6 @@ RETURNS BOOLEAN DETERMINISTIC BEGIN
 END$$
 DELIMITER ;
 
--- This checks if saved AND submits a review -- should probably rename to reflect that.
 DROP PROCEDURE IF EXISTS user_review_movie;
 DELIMITER $$
 CREATE  PROCEDURE user_review_movie(uname VARCHAR(60), body VARCHAR(2000), mov_id INT) BEGIN
@@ -233,6 +236,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS find_num_saved_movies;
 DELIMITER $$
 CREATE PROCEDURE find_num_saved_movies(mov_id INT) BEGIN
+-- Do we even use this procedure anywhere?
 	IF EXISTS (SELECT COUNT(DISTINCT movie_user.username) FROM movie_user, saved_movies
 			WHERE mov_id = movie_id
 			AND saved_movies.movie_id = mov_id
@@ -249,15 +253,14 @@ DELIMITER ;
 
 DROP PROCEDURE IF EXISTS get_popular_movies;
 DELIMITER $$
-CREATE PROCEDURE get_popular_movies() BEGIN
-	SELECT movies.movie_id, title, results.num_seen FROM
-	(SELECT COUNT(movie_id) AS num_seen, movie_id AS mvid FROM saved_movies
-	GROUP BY movie_id
-	ORDER BY COUNT(movie_id) DESC
-	LIMIT 3) results, movies
-	WHERE movies.movie_id = mvid
-	GROUP BY movies.movie_id, title, results.num_seen
-	ORDER BY results.num_seen DESC;
+CREATE PROCEDURE get_popular_movies(num INT, start_date DATE, end_date DATE) BEGIN
+	SELECT movie_id, title, view_count 
+    FROM movies JOIN saved_movies USING (movie_id)
+    WHERE view_count > 0
+    AND save_time BETWEEN start_date AND end_date
+	ORDER BY view_count DESC
+    LIMIT num;
+    -- Take limit as an arg as well as a date range
 END $$
 DELIMITER ;
 
@@ -374,4 +377,3 @@ insert into roles (role_name, actor_id, movie_id) VALUES
 ("James Franco", 6, 7);
 
 update movie_user set is_admin=1 where username = "admin";
-select * from movie_user;
