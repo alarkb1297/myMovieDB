@@ -5,15 +5,9 @@ var Actor = require('../models/actor');
 router.get('/:actor_id', function (req, res, next) {
   Actor.get(req.params.actor_id, function (err, results) {
     if (err) {
-      return res.send({
-        "code": 400,
-        "failed": "error ocurred"
-      })
+      return next(err);
     } else if (results[0].length == 0) {
-      return res.send({
-        "code": 404,
-        "failed": "not found"
-      })
+      return next();
     }
 
     var roleresults = results[0][0].movielist

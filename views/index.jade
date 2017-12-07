@@ -24,5 +24,4 @@ block content
       p #[a(href="/movie/#{movie.movie_id}") #{movie.title}]
 
   if session.user && session.user.isAdmin
-    form#formAddMovie(name="addMovie", method="get", action="/movie/addMovie")
-      button#btnSubmit.btn.btn-warning(type="submit") Add Movie
+    a.btn.btn-warning(href="/movie/addMovie") Add Movie

@@ -7,15 +7,9 @@ var auth = require('../middlewares/auth');
 router.get('/:movie_id/edit', auth.isAdmin, function (req, res, next) {
   Movie.get(req.params.movie_id, function (err, results) {
     if (err) {
-      return res.send({
-        "code": 400,
-        "failed": "error ocurred"
-      })
+      return next(err);
     } else if (results[0].length == 0) {
-      return res.send({
-        "code": 404,
-        "failed": "not found"
-      })
+      return next();
     }
 
     var oldValues = {
@@ -49,10 +43,7 @@ router.post('/updateMovie', auth.isAdmin, function (req, res, next) {
 
   Movie.editMovie(newValues, function (err, success) {
     if (err) {
-      return res.send({
-        "code": 400,
-        "failed": "error ocurred"
-      })
+      return next(err);
     }
 
     res.redirect('/movie/' + success);
@@ -62,10 +53,7 @@ router.post('/updateMovie', auth.isAdmin, function (req, res, next) {
 router.post('/deleteMovie', auth.isAdmin, function (req, res, next) {
   Movie.deleteMovie(req.body.id, function (err, success) {
     if (err) {
-      return res.send({
-        "code": 400,
-        "failed": "error ocurred"
-      })
+      return next(err);
     }
 
     res.redirect('/');
@@ -75,59 +63,49 @@ router.post('/deleteMovie', auth.isAdmin, function (req, res, next) {
 router.post('/savemovie', auth.loggedIn, function (req, res, next) {
   User.saveMovie(req.session.user.username, req.body.id, function (err, success) {
     if (err) {
-      return res.send({
-        "code": 400,
-        "failed": "error ocurred"
-      })
+      return next(err);
     }
     res.redirect(req.get('referer'));
   });
 });
 
 router.post('/reviewMovie', auth.loggedIn, function (req, res, next) {
-    Movie.addReview(req.body.id, req.session.user.username, req.body.review, function (err, success) {
-        if (err) {
-            return res.send({
-                "code": 400,
-                "failed": "error ocurred"
-            })
-        }
-        res.redirect(req.get('referer'));
-    });
+  Movie.addReview(req.body.id, req.session.user.username, req.body.review, function (err, success) {
+    if (err) {
+      return next(err);
+    }
+
+    res.redirect(req.get('referer'));
+  });
 });
 
 router.post('/ratemovie', auth.loggedIn, function (req, res, next) {
   Movie.rate(req.body.id, req.body.rating, req.session.user.username, function (err, success) {
     if (err) {
-      return res.send({
-        "code": 400,
-        "failed": "error ocurred"
-      });
+      return next(err);
     }
+
     res.redirect(req.get('referer'));
   });
 });
 
 router.post('/insertMovie', auth.isAdmin, function (req, res, next) {
-    var movie = {
-        "title" : req.body.title,
-        "director" : req.body.director,
-        "year" : req.body.year,
-        "genre" : req.body.genre,
-        "summary" : req.body.summary,
-        "trailer" : req.body.trailer
-    };
+  var movie = {
+    "title" : req.body.title,
+    "director" : req.body.director,
+    "year" : req.body.year,
+    "genre" : req.body.genre,
+    "summary" : req.body.summary,
+    "trailer" : req.body.trailer
+  };
 
-    Movie.addMovie(movie, function (err, success) {
-        if (err) {
-            return res.send({
-                "code": 400,
-                "failed": "error ocurred"
-            })
-        }
+  Movie.addMovie(movie, function (err, success) {
+    if (err) {
+      return next(err);
+    }
 
-        res.redirect('/movie/' + success);
-    });
+    res.redirect('/movie/' + success);
+  });
 });
 
 router.get('/addMovie', auth.isAdmin, function (req, res, next) {
@@ -138,10 +116,7 @@ router.get('/:movie_id', function (req, res, next) {
   if (req.session.user) {
     User.savedMovie(req.session.user.username, req.params.movie_id, function (err, isSaved) {
       if (err) {
-        return res.send({
-          "code": 400,
-          "failed": "error ocurred"
-        })
+        return next(err);
       }
 
       res.locals.isSaved = isSaved;
@@ -156,15 +131,9 @@ router.get('/:movie_id', function (req, res, next) {
 router.get('/:movie_id', function (req, res, next) {
   Movie.get(req.params.movie_id, function (err, results) {
     if (err) {
-      return res.send({
-        "code": 400,
-        "failed": "error ocurred"
-      })
+      return next(err);
     } else if (results[0].length == 0) {
-      return res.send({
-        "code": 404,
-        "failed": "not found"
-      })
+      return next();
     }
     // May want to abstract this role processes since it's in actor too
     var roleresults = results[0][0].rolelist

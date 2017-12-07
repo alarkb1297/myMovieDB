@@ -7,7 +7,7 @@ html(lang="en")
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     header.navbar.navbar-default.navbar-fixed-top
-      a(href="/") Home
+      a.btn.btn-success(href="/") Home
       form#formSearch(name="search", method="get", action="/search")
         .form-inline
             input#inputQuery.form-control(type="text", placeholder="Search", name="search")
@@ -33,7 +33,7 @@ html(lang="en")
             input#inputUserName.form-control(type="text", placeholder="username", name="username")
             input#inputUserPass.form-control(type="password", placeholder="password", name="password")
             button#btnSubmit.btn.btn-success(type="submit") Login
-        a(href="/register") Register
+        a.btn.btn-success(href="/register") Register
     block content
     script(src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN", crossorigin="anonymous")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh", crossorigin="anonymous")

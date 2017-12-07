@@ -10,30 +10,21 @@ router.get('/search', function (req, res, next) {
 
   Search.search(query, 0, function (err, results) {
     if (err) {
-      return res.send({
-        "code": 400,
-        "failed": "error ocurred"
-      })
+      return next(err);
     }
 
     var movies = results[0];
 
     Search.search(query, 1, function (err, results) {
       if (err) {
-        return res.send({
-          "code": 400,
-          "failed": "error ocurred"
-        })
+        return next(err);
       }
 
       var actors = results[0];
 
       Search.search(query, 2, function (err, results) {
         if (err) {
-          return res.send({
-            "code": 400,
-            "failed": "error ocurred"
-          })
+          return next(err);
         }
 
         var roles = results[0];

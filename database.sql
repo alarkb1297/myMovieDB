@@ -376,4 +376,6 @@ insert into roles (role_name, actor_id, movie_id) VALUES
 ("Seth Rogan", 5, 7),
 ("James Franco", 6, 7);
 
-update movie_user set is_admin=1 where username = "admin";
+insert into movie_user (username, user_password, is_admin) value ("admin", "0DPiKuNIrrVmD8IUCuw1hQxNqZc=", 1);
+
+select * from movie_user;
