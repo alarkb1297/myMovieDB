@@ -67,3 +67,11 @@ exports.addReview = function (movie_id, username, review, cb) {
         cb (null, true);
     });
 }
+
+exports.addRole = function (role, movie_id, cb) {
+    db.query('call add_role(?, ?, ?)', [movie_id, role.name, role.role],
+        function (error, result, fields) {
+            if (error) return cb(error);
+            cb(null, true);
+        });
+}

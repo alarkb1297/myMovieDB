@@ -12,6 +12,8 @@ block content
             if (session.user.isAdmin)
                 form#formEditMovie(name="editMovie", method="get", action=id + "/edit")
                     button#btnSubmit.btn.btn-warning(type="submit") Edit Movie
+                form#formAddRole(name="addRole", method="get", action=id + "/addRole")
+                    button#btnSubmit.btn.btn-warning(type="submit") Add Role
         else
             h3 Log in to save, rate, and review!
 

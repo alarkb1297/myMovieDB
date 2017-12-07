@@ -326,6 +326,19 @@ END$$
 DELIMITER ;
 
 
+DROP PROCEDURE IF EXISTS add_role;
+DELIMITER $$
+CREATE PROCEDURE add_role(movie_id INT, new_actor_name VARCHAR(60), role VARCHAR(60)) BEGIN
+
+
+INSERT INTO roles  (role_name, actor_name, movie_id) VALUES
+(role, new_actor_name, movie_id);
+
+END $$
+
+DELIMITER ;
+
+
 insert into actor (actor_name, dob, biography, height_in_inches, birthplace) VALUES
 ("Jim Carrey", '1962-01-17', "Makes people laugh", 74, "Newmarket, Ontario"),
 ("Megan Fox", '1986-06-16', "Pretty girl in action movies", 64, "Rockwood, Tennessee"),

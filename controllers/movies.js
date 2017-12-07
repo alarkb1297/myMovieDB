@@ -134,6 +134,26 @@ router.get('/addMovie', auth.isAdmin, function (req, res, next) {
     res.render('addMovie', { title: 'MyMovieDB Add Movie'});
 });
 
+router.post('/insertRole', auth.isAdmin, function (req, res, next) {
+    var role = {
+        "name" : req.body.name,
+        "role" : req.body.role
+    };
+
+    Movie.addRole(role, req.body.id, function (err, success) {
+        if (err) {
+            next(err);
+        }
+
+        res.redirect('/movie/' + success);
+    });
+});
+
+
+router.get('/:movie_id/addRole', auth.isAdmin, function (req, res, next) {
+    res.render('addRole', { title: 'MyMovieDB Add Role', id: req.params.movie_id});
+});
+
 router.get('/:movie_id', function (req, res, next) {
   if (req.session.user) {
     User.savedMovie(req.session.user.username, req.params.movie_id, function (err, isSaved) {
@@ -211,5 +231,7 @@ router.get('/:movie_id', function (req, res, next) {
     });
   });
 });
+
+
 
 module.exports = router;
