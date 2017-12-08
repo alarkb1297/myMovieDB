@@ -3,14 +3,14 @@ extends layout
 block content
      h2.container-fluid Details
         if (session.user)
+            if (session.user.isAdmin)
+                a.btn.btn-warning(href=id + "/edit") Edit Movie
             form#formSaveMovie(name="saveMovie", method="post", action="/movie/savemovie")
                 button#btnSubmit.btn.btn-success(name="id", type="submit", value=id)= locals.isSaved ? "Unsave" : "I've seen this!"
             h4 How would you rate this movie?
             form#formRateMovie(name="rating", method="post", action="/movie/ratemovie")
                 input(name="rating", type="number", min="0", max="100", step="1")
                 button#btnSubmit.btn.btn-success(name="id", type="submit", value=id) Rate
-            if (session.user.isAdmin)
-                a.btn.btn-warning(href=id + "/edit") Edit Movie
         else
             h3 Log in to save, rate, and review!
 

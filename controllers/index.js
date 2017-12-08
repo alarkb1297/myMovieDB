@@ -25,28 +25,31 @@ function formatDate(d) {
 router.get('/', function (req, res, next) {
   var today = new Date();
   var tomorrow = new Date().setDate(today.getDate() + 1);
+  var week = new Date().setDate(today.getDate() - 7);
   today = formatDate(today);
   tomorrow = formatDate(tomorrow);
+  week = formatDate(week);
 
   var limit = req.query.limit ? req.query.limit : 5;
-  var startDate = req.query.startDate ? req.query.startDate : today;
-  var endDate = req.query.endDate ? req.query.endDate : tomorrow;
+  var startDate = req.query.startdate ? req.query.startdate : week;
+  var endDate = req.query.enddate ? req.query.enddate : tomorrow;
 
-  Movies.getTopMovies(limit, startDate, endDate,
-    function (err, result) {
-      if (err) {
-        return next(err);
-      } else {
-        var movies = result;
-      }
+  Movies.getTopMovies(limit, startDate, endDate, function (err, result) {
+    if (err) return next(err);
 
-      res.render('index', {
-        title: 'MyMovieDB',
-        movies: movies,
-        retry: req.query.retry,
-        today: today,
-        tomorrow: tomorrow
-      });
+    var movies = result;
+
+    console.log(movies);
+
+    res.render('index', {
+      title: 'MyMovieDB',
+      movies: movies,
+      retry: req.query.retry,
+      today: today,
+      tomorrow: tomorrow,
+      start: startDate,
+      end:endDate
+    });
   });
 });
 

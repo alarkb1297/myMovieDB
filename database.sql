@@ -194,7 +194,6 @@ CREATE PROCEDURE toggle_save_movie(user VARCHAR(60), m_id INT) BEGIN
 	IF (SELECT check_if_saved(user, m_id)) THEN
 		DELETE FROM saved_movies WHERE username = user AND movie_id = m_id;
         UPDATE movies SET view_count=view_count-1 WHERE movie_id = m_id;
-        -- Perform a check to make sure it's not negative?
 	ELSE 
 		INSERT INTO saved_movies (username, movie_id) VALUE (user, m_id);
 		UPDATE movies SET view_count=view_count+1 WHERE movie_id = m_id;
@@ -231,32 +230,14 @@ CREATE  PROCEDURE user_review_movie(uname VARCHAR(60), body VARCHAR(2000), mov_i
 END$$
 DELIMITER ;
 
-
-DROP PROCEDURE IF EXISTS find_num_saved_movies;
-DELIMITER $$
-CREATE PROCEDURE find_num_saved_movies(mov_id INT) BEGIN
--- Do we even use this procedure anywhere?
-	IF EXISTS (SELECT COUNT(DISTINCT movie_user.username) FROM movie_user, saved_movies
-			WHERE mov_id = movie_id
-			AND saved_movies.movie_id = mov_id
-			GROUP BY movie_user.username) THEN
-		SELECT COUNT(DISTINCT movie_user.username) AS num_saved FROM movie_user, saved_movies
-		WHERE mov_id = movie_id
-		AND saved_movies.movie_id = mov_id
-		GROUP BY movie_user.username;
-	ELSE
-		SELECT 0 AS num_saved;
-	END IF;
-END$$
-DELIMITER ;
-
 DROP PROCEDURE IF EXISTS get_popular_movies;
 DELIMITER $$
 CREATE PROCEDURE get_popular_movies(num INT, start_date DATE, end_date DATE) BEGIN
-	SELECT movie_id, title, view_count 
+    SELECT movie_id, title, view_count 
     FROM movies JOIN saved_movies USING (movie_id)
     WHERE view_count > 0
     AND save_time BETWEEN start_date AND end_date
+    GROUP BY movie_id
 	ORDER BY view_count DESC
     LIMIT num;
 END $$
@@ -363,6 +344,8 @@ END $$
 DELIMITER ;
 
 
+
+
 insert into actor (actor_name, dob, biography, height_in_inches, birthplace) VALUES
 ("Jim Carrey", '1962-01-17', "Makes people laugh", 74, "Newmarket, Ontario"),
 ("Megan Fox", '1986-06-16', "Pretty girl in action movies", 64, "Rockwood, Tennessee"),
@@ -411,6 +394,62 @@ insert into roles (role_name, actor_id, movie_id) VALUES
 ("Seth Rogan", 5, 7),
 ("James Franco", 6, 7);
 
-insert into movie_user (username, user_password, is_admin) value ("admin", "0DPiKuNIrrVmD8IUCuw1hQxNqZc=", 1);
+insert into movie_user (username, user_password, is_admin) values 
+('admin', '0DPiKuNIrrVmD8IUCuw1hQxNqZc=', 1),
+('fakeuser1', 'NWoZK3kTsExUV00Ywo1G5jlUKKs=', 0),
+('fakeuser2', '2kuSN7rMzfGcB2DKt67EqDWQELA=', 0),
+('fakeuser3', 'd95o2uzYI7q7tY7bHI4U1xBug7s=', 0),
+('fakeuser4', 'G2RTiSRzpGfQc3LUXrBavCAxZHo=', 0),
+('fakeuser5', 'rDR41po8gfpi5g9cNpYWWk5easQ=', 0);
 
-select * from movie_user;
+CALL toggle_save_movie('fakeuser5', 7);
+CALL toggle_save_movie('fakeuser5', 6);
+CALL toggle_save_movie('fakeuser5', 5);
+CALL toggle_save_movie('fakeuser4', 4);
+CALL toggle_save_movie('fakeuser4', 7);
+CALL toggle_save_movie('fakeuser4', 3);
+CALL toggle_save_movie('fakeuser3', 7);
+CALL toggle_save_movie('fakeuser3', 2);
+CALL toggle_save_movie('fakeuser3', 3);
+CALL toggle_save_movie('fakeuser3', 6);
+CALL toggle_save_movie('fakeuser2', 4);
+CALL toggle_save_movie('fakeuser2', 3);
+CALL toggle_save_movie('fakeuser2', 1);
+CALL toggle_save_movie('fakeuser1', 7);
+CALL toggle_save_movie('fakeuser1', 2);
+CALL toggle_save_movie('fakeuser1', 1);
+
+UPDATE saved_movies SET save_time='2017-12-07 14:29:49' WHERE username='fakeuser5' AND movie_id=7;
+UPDATE saved_movies SET save_time='2017-12-08 14:29:50' WHERE username='fakeuser5' AND movie_id=6;
+UPDATE saved_movies SET save_time='2017-12-06 14:29:50' WHERE username='fakeuser5' AND movie_id=5;
+UPDATE saved_movies SET save_time='2017-11-25 14:30:45' WHERE username='fakeuser4' AND movie_id=4;
+UPDATE saved_movies SET save_time='2017-12-04 14:30:49' WHERE username='fakeuser4' AND movie_id=7;
+UPDATE saved_movies SET save_time='2017-10-08 14:30:50' WHERE username='fakeuser4' AND movie_id=3;
+UPDATE saved_movies SET save_time='2017-11-29 14:33:12' WHERE username='fakeuser3' AND movie_id=7;
+UPDATE saved_movies SET save_time='2017-12-08 14:33:13' WHERE username='fakeuser3' AND movie_id=2;
+UPDATE saved_movies SET save_time='2017-12-02 14:33:14' WHERE username='fakeuser3' AND movie_id=3;
+UPDATE saved_movies SET save_time='2017-10-30 14:33:15' WHERE username='fakeuser3' AND movie_id=6;
+UPDATE saved_movies SET save_time='2017-12-07 14:33:42' WHERE username='fakeuser2' AND movie_id=4;
+UPDATE saved_movies SET save_time='2017-12-06 14:33:43' WHERE username='fakeuser2' AND movie_id=3;
+UPDATE saved_movies SET save_time='2017-12-01 14:33:44' WHERE username='fakeuser2' AND movie_id=1;
+UPDATE saved_movies SET save_time='2017-11-15 14:35:26' WHERE username='fakeuser1' AND movie_id=7;
+UPDATE saved_movies SET save_time='2017-11-20 14:35:28' WHERE username='fakeuser1' AND movie_id=2;
+UPDATE saved_movies SET save_time='2017-12-08 14:35:29' WHERE username='fakeuser1' AND movie_id=1;
+
+insert into reviews (movie_id, username, review_text) VALUES
+(7, 'fakeuser1', 'This movie is so much fun! I watch it every day.'),
+(2, 'fakeuser1', 'Batman\'s acting could have been better.'),
+(1, 'fakeuser1', 'Possibly the worst movie I have ever seen.'),
+(4, 'fakeuser2', 'What a twist ending! Amazing movie.'),
+(3, 'fakeuser2', 'This movie is nothing new, wish I hadn\'t spent the money to see it.'),
+(1, 'fakeuser2', 'I love watching robots smash each other! So cool!'),
+(7, 'fakeuser3', 'Rogan and Franco do it again... A modern day masterpiece.'),
+(2, 'fakeuser3', 'Loved this movie, much better than the rest of the movies.'),
+(3, 'fakeuser3', 'My favorite Star Wars Movie of them all! Acting was top-notch.'),
+(6, 'fakeuser3', 'I found this movie very offensive, would not recommend.'),
+(4, 'fakeuser4', 'A classic, stands the test of time even today.'),
+(7, 'fakeuser4', 'I don\'t see the hype, the movie was just OK.'),
+(3, 'fakeuser4', 'My favorite character was that little robot, the rest of the cast was pretty bad.'),
+(7, 'fakeuser5', 'I didn\'t understand a single thing that was going on in this film.'),
+(6, 'fakeuser5', 'Tasteless humor and shock value is all that this movie provides.'),
+(5, 'fakeuser5', 'As a police officer I do not condone the actions of the characters in this film.');

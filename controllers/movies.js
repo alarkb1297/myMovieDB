@@ -32,9 +32,7 @@ function makeRoleList(rl) {
 router.get('/:movie_id', function (req, res, next) {
   if (req.session.user) {
     User.savedMovie(req.session.user.username, req.params.movie_id, function (err, isSaved) {
-      if (err) {
-        return next(err);
-      }
+      if (err) return next(err);
 
       res.locals.isSaved = isSaved;
       next();
@@ -48,15 +46,13 @@ router.get('/:movie_id', function (req, res, next) {
 // Get the main details about the movie of given ID
 router.get('/:movie_id', function (req, res, next) {
   Movie.get(req.params.movie_id, function (err, results) {
-    if (err) {
-      return next(err);
-    } else if (results[0].length == 0) {
-      return next();
-    }
+    if (err) return next(err);
+    else if (results[0].length == 0) return next();
 
     roles = makeRoleList(results[0][0].rolelist);
 
     Movie.getReviews(req.params.movie_id, function (err, results2) {
+      if (err) return next(err);
 
       var reviews = [];
 
@@ -130,11 +126,8 @@ router.post('/insertMovie', auth.isAdmin, function (req, res, next) {
 // Get the page for editing the movie of given ID
 router.get('/:movie_id/edit', auth.isAdmin, function (req, res, next) {
   Movie.get(req.params.movie_id, function (err, results) {
-    if (err) {
-      return next(err);
-    } else if (results[0].length == 0) {
-      return next();
-    }
+    if (err) return next(err);
+    else if (results[0].length == 0) return next();
 
     var oldValues = {
       "id" : req.params.movie_id,
@@ -188,8 +181,10 @@ router.post('/updateMovie', auth.isAdmin, function (req, res, next) {
     }
 
     Movie.editRoles(newValues.id, roles, function(err, success) {
+      if (err.code == 'ER_NO_REFERENCED_ROW_2') return next(new Error("Couldn't add all roles, one or more " +
+        "actor IDs could not be found. However, the movie was added successfully" +
+        "so search for it, and edit it to retry adding the missing roles."))
       if (err) return next(err);
-
       return res.redirect('/movie/' + success);
     });
   });
@@ -206,10 +201,7 @@ router.post('/savemovie', auth.loggedIn, function (req, res, next) {
 // Post request for submitting a user's review
 router.post('/reviewMovie', auth.loggedIn, function (req, res, next) {
   Movie.addReview(req.body.id, req.session.user.username, req.body.review, function (err, success) {
-    if (err) {
-      return next(err);
-    }
-
+    if (err) return next(err);
     res.redirect(req.get('referer'));
   });
 });
@@ -217,10 +209,7 @@ router.post('/reviewMovie', auth.loggedIn, function (req, res, next) {
 // Post request for submitting a user's rating
 router.post('/ratemovie', auth.loggedIn, function (req, res, next) {
   Movie.rate(req.body.id, req.body.rating, req.session.user.username, function (err, success) {
-    if (err) {
-      return next(err);
-    }
-
+    if (err) return next(err);
     res.redirect(req.get('referer'));
   });
 });

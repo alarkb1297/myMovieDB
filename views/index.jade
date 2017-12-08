@@ -4,25 +4,26 @@ block content
   h1= title
   p Welcome to #{title}
 
+  if session.user && session.user.isAdmin
+    a.btn.btn-warning(href="/movie/add") Add Movie
+    a.btn.btn-warning(href="/actor/add") Add Actor
+
   h3 Top Movies
-  p See what movies used to be trending
+  p See what movies are or used to be trending
   form#formTopMovieOptions(name="topMovieOptions" method="get", action="/")
     span Number of movies
     input.form-control(type="number", name="limit", min=0, max=50, placeholder="Number of movies to retrieve"
     value=5, required)
     span Start date
-    input.form-control(type="date", name="startdate" value=today, max=today, required)
+    input.form-control(type="date", name="startdate" value=start, max=today, required)
     span End date
-    input.form-control(type="date", name="enddate" value=tomorrow, max=tomorrow, required)
+    input.form-control(type="date", name="enddate" value=end, max=tomorrow, required)
     button#btnSubmit.btn.btn-success(type="submit") Find
-    // TODO: show error if end less than start
 
+  p Results:
   if movies.length == 0
     p No top movies to show.
   else
     each movie in movies
       p #[a(href="/movie/#{movie.movie_id}") #{movie.title}]
 
-  if session.user && session.user.isAdmin
-    a.btn.btn-warning(href="/movie/add") Add Movie
-    a.btn.btn-warning(href="/actor/add") Add Actor

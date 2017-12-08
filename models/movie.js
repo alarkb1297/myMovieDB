@@ -32,12 +32,15 @@ exports.editMovie = function(movie, cb) {
 
 // Add roles to a particular movie
 exports.addRoles = function (movie_id, roles, cb) {
-  roles.forEach(function(role) {
-    db.query('call add_role(?, ?, ?)', [movie_id, role.actor, role.name], function (error, result, fields) {
+  function addOne(role) {
+    if (!role) return cb(null, movie_id);
+    db.query('CALL add_role(?, ?, ?)', [movie_id, role.actor, role.name], function (error, result, fields) {
       if (error) return cb(error);
+      else addOne(roles.shift());
     });
-  });
-  cb(null, movie_id);
+  }
+
+  addOne(roles.shift());
 }
 
 // Edit roles in the database.
@@ -45,6 +48,7 @@ exports.editRoles = function (movie_id, roles, cb) {
   db.query("DELETE FROM roles WHERE movie_id = ?", [movie_id], function (error, result, fields) {
     if (error) return cb(error);
     exports.addRoles(movie_id, roles, function(err, success) {
+      if (err) return cb(err);
       return cb(null, movie_id);
     });
   });

@@ -17,11 +17,8 @@ function formatDate(d) {
 // Get the actor details page of the given ID
 router.get('/:actor_id', function (req, res, next) {
   Actor.get(req.params.actor_id, function (err, results) {
-    if (err) {
-      return next(err);
-    } else if (results[0].length == 0) {
-      return next();
-    }
+    if (err) return next(err);
+    else if (results[0].length == 0) return next();
 
     var roleresults = results[0][0].movielist
     var roles = [];
@@ -75,11 +72,8 @@ router.post('/addActor', auth.isAdmin, function (req, res, next) {
 // Get the page for editing the details of the actor of given ID
 router.get('/:actor_id/edit', auth.isAdmin, function (req, res, next) {
   Actor.get(req.params.actor_id, function (err, results) {
-    if (err) {
-      return next(err);
-    } else if (results[0].length == 0) {
-      return next();
-    }
+    if (err) return next(err);
+    else if (results[0].length == 0) return next();
 
     var oldValues = {
       "id" : req.params.actor_id,

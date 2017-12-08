@@ -9,23 +9,17 @@ router.get('/search', function (req, res, next) {
   var sorto = parseInt(req.query.sortorder);
 
   Search.search(query, 0, function (err, results) {
-    if (err) {
-      return next(err);
-    }
+    if (err) return next(err);
 
     var movies = results[0];
 
     Search.search(query, 1, function (err, results) {
-      if (err) {
-        return next(err);
-      }
+      if (err) return next(err);
 
       var actors = results[0];
 
       Search.search(query, 2, function (err, results) {
-        if (err) {
-          return next(err);
-        }
+        if (err) return next(err);
 
         var roles = results[0];
 
@@ -45,7 +39,6 @@ router.get('/search', function (req, res, next) {
               break;
             case 3:
               movies.sort(function (a, b) {
-                // TODO: Add view count to db
                 if (sorto == 1) return a.view_count - b.view_count;
                 else return b.view_count - a.view_count;
               });
