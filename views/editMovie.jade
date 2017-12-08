@@ -11,7 +11,7 @@ block content
       newDiv.setAttribute("id", "role" + rolenum);
       newDiv.setAttribute("class", "form-inline");
       newDiv.innerHTML = '<input class=\"form-control\" name=\"rolename' + rolenum + '\" placeholder=\"Role name\"/>'
-        + '<input class=\"form-control\" name=\"actorid' + rolenum + '\" placeholder=\"Actor id\"/>'
+        + '<input type=\"number\" class=\"form-control\" min=0 name=\"actorid' + rolenum + '\" placeholder=\"Actor id\"/>'
         + '<button type=\"button\" onclick=\"remove_field(\'role' + rolenum + '\');\" class=\"btn btn-success\">Remove role</button>';
       to.appendChild(newDiv);
     }
@@ -34,7 +34,7 @@ block content
         each role in roles
           div.form-inline(id="role" + rolenum)
             input.form-control(name="rolename" + rolenum, placeholder="Role name", value=role.name)
-            input.form-control(name="actorid" + rolenum, placeholder="Actor id", value=role.id)
+            input.form-control(name="actorid" + rolenum, type="number", min=0, placeholder="Actor id", value=role.id)
             button.btn.btn-success(type="button", onclick="remove_field(\'role" + rolenum + "\');") Remove role
           - rolenum++;
       button#btnAddMore.btn.btn-success(type="button", onclick="add_fields();") Add another Role

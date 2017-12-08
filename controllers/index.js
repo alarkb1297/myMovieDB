@@ -39,8 +39,6 @@ router.get('/', function (req, res, next) {
 
     var movies = result;
 
-    console.log(movies);
-
     res.render('index', {
       title: 'MyMovieDB',
       movies: movies,

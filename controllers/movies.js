@@ -113,7 +113,12 @@ router.post('/insertMovie', auth.isAdmin, function (req, res, next) {
       }
 
       Movie.addRoles(newid, roles, function(err, success) {
-        if (err) return next(err);
+        if (err) {
+          if (err.code == 'ER_NO_REFERENCED_ROW_2') return next(new Error("Couldn't add all roles, one or more " +
+            "actor IDs could not be found. However, the movie was added successfully " +
+            "so search for it, and edit it to retry adding the missing roles."));
+          else return next(err);
+        }
 
         return res.redirect('/movie/' + success);
       });
@@ -181,10 +186,12 @@ router.post('/updateMovie', auth.isAdmin, function (req, res, next) {
     }
 
     Movie.editRoles(newValues.id, roles, function(err, success) {
-      if (err.code == 'ER_NO_REFERENCED_ROW_2') return next(new Error("Couldn't add all roles, one or more " +
-        "actor IDs could not be found. However, the movie was added successfully" +
-        "so search for it, and edit it to retry adding the missing roles."))
-      if (err) return next(err);
+      if (err) {
+        if (err.code == 'ER_NO_REFERENCED_ROW_2') return next(new Error("Couldn't add all roles, one or more " +
+          "actor IDs could not be found. However, the movie was added successfully " +
+          "so search for it, and edit it to retry adding the missing roles."));
+        else return next(err);
+      }
       return res.redirect('/movie/' + success);
     });
   });

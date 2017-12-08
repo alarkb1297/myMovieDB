@@ -9,7 +9,7 @@ block content
       var newDiv = document.createElement("div");
       newDiv.setAttribute("class", "form-inline");
       newDiv.innerHTML = '<input class=\"form-control\" name=\"rolename' + rolenum + '\" placeholder=\"Role name\"/>'
-        + '<input class=\"form-control\" name=\"actorid' + rolenum + '\" placeholder=\"Actor id\"/>';
+        + '<input class=\"form-control\" type=\"number\" min=0 name=\"actorid' + rolenum + '\" placeholder=\"Actor id\"/>';
       to.appendChild(newDiv);
     }
 
@@ -25,7 +25,7 @@ block content
         - rolenum = 0;
         .form-inline
           input.form-control(name="rolename" + rolenum, placeholder="Role name")
-          input.form-control(name="actorid" + rolenum, placeholder="Actor id")
+          input.form-control(name="actorid" + rolenum, type="number", min=0, placeholder="Actor id")
       button#btnAddMore.btn.btn-success(type="button", onclick="add_fields();") Add another Role
       #submit
         button#btnSubmit.btn.btn-success(type="submit") Insert
