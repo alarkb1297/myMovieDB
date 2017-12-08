@@ -23,7 +23,9 @@ view_count INT NOT NULL DEFAULT 0,
 genre VARCHAR(60) NOT NULL,
 summary VARCHAR(2000),
 trailer VARCHAR(200),
-FOREIGN KEY (director_id) REFERENCES director (director_id)
+FOREIGN KEY (director_id) REFERENCES director (director_id),
+CONSTRAINT check_metascore CHECK (metascore>=0 AND metascore<= 100),
+CONSTRAINT check_user_rating CHECK (user_rating>=0 AND user_rating<= 100)
 ) ENGINE = innoDB;
 
 CREATE TABLE ratings (
@@ -31,7 +33,8 @@ rating_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 movie_id INT NOT NULL,
 rating_source VARCHAR(60) NOT NULL,
 rating INT NOT NULL,
-FOREIGN KEY (movie_id) REFERENCES movies (movie_id)
+FOREIGN KEY (movie_id) REFERENCES movies (movie_id),
+CONSTRAINT rating CHECK (rating>=0 AND rating<= 100)
 ) ENGINE = innoDB;
 
 CREATE TABLE actor (
