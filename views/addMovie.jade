@@ -1,13 +1,31 @@
 extends layout
 
 block content
+  script.
+    var rolenum = 0;
+    function add_fields() {
+      rolenum++;
+      var to = document.getElementById("roleFields");
+      var newDiv = document.createElement("div");
+      newDiv.setAttribute("class", "form-inline");
+      newDiv.innerHTML = '<input class=\"form-control\" name=\"rolename' + rolenum + '\" placeholder=\"Role name\"/>'
+        + '<input class=\"form-control\" name=\"actorid' + rolenum + '\" placeholder=\"Actor id\"/>';
+      to.appendChild(newDiv);
+    }
 
-    form#formAddMovie(name="addMovie", method="post", action="/movie/insertMovie")
-        .form-a
-            input#inputTitle.form-control(type="text", placeholder="title", name="title")
-            input#inputDirector.form-control(type="text", placeholder="director", name="director")
-            input#inputReleaseYear.form-control(type="text", placeholder="year", name="year")
-            input#inputGenre.form-control(type="text", placeholder="genre", name="genre")
-            textarea#inputSummary.form-control(placeholder="summary", name="summary")
-            input#inputTrailer.form-control(type="text", placeholder="trailer", name="trailer")
-            button#btnSubmit.btn.btn-success(type="submit") Insert
+  form#formAddMovie(name="addMovie", method="post", action="/movie/insertMovie")
+    .form-a
+      input#inputTitle.form-control(type="text", placeholder="title", name="title" required)
+      input#inputDirector.form-control(type="text", placeholder="director", name="director" required)
+      input#inputReleaseYear.form-control(type="number", min="1900", max="3000", placeholder="year", name="year" required)
+      input#inputGenre.form-control(type="text", placeholder="genre", name="genre" required)
+      textarea#inputSummary.form-control(placeholder="summary", name="summary")
+      input#inputTrailer.form-control(type="text", placeholder="trailer", name="trailer")
+      #roleFields
+        - rolenum = 0;
+        .form-inline
+          input.form-control(name="rolename" + rolenum, placeholder="Role name")
+          input.form-control(name="actorid" + rolenum, placeholder="Actor id")
+      button#btnAddMore.btn.btn-success(type="button", onclick="add_fields();") Add another Role
+      #submit
+        button#btnSubmit.btn.btn-success(type="submit") Update

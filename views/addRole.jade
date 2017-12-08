@@ -1,9 +1,0 @@
-extends layout
-
-block content
-
-    form#formAddRole(name="addRole", method="post", action="/movie/insertRole")
-        .form-a
-            input#inputName.form-control(type="text", placeholder="actor name", name="name")
-            input#inputRole.form-control(type="text", placeholder="role", name="new_actor_name")
-            button#btnSubmit.btn.btn-success(name = "id", type="submit", value=id) Insert

@@ -4,13 +4,13 @@ CREATE DATABASE movieDB;
 
 USE movieDB;
 
-create table director (
+CREATE TABLE director (
 director_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-director_name varchar(60) not null,
-dob date not null,
-biography varchar(500),
-birthplace varchar(100)
-) engine = innoDB;
+director_name VARCHAR(60) NOT NULL,
+dob DATE NOT NULL,
+biography VARCHAR(500),
+birthplace VARCHAR(100)
+) ENGINE = innoDB;
 
 CREATE TABLE movies (
 movie_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -33,32 +33,32 @@ rating_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 movie_id INT NOT NULL,
 rating_source VARCHAR(60) NOT NULL,
 rating INT NOT NULL,
-FOREIGN KEY (movie_id) REFERENCES movies (movie_id),
+FOREIGN KEY (movie_id) REFERENCES movies (movie_id)  ON DELETE CASCADE,
 CONSTRAINT rating CHECK (rating>=0 AND rating<= 100)
 ) ENGINE = innoDB;
 
 CREATE TABLE actor (
 actor_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 actor_name VARCHAR(60) NOT NULL,
-dob date not null,
-biography varchar(500),
+dob DATE NOT NULL,
+biography VARCHAR(500),
 height_in_inches INT,
-birthplace varchar(100)
+birthplace VARCHAR(100)
 ) ENGINE = innoDB;
 
-create table roles (
+CREATE TABLE roles (
 role_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-role_name varchar(60) not null,
-actor_id INT not null,
+role_name VARCHAR(60) NOT NULL,
+actor_id INT NOT NULL,
 movie_id INT NOT NULL,
-foreign key (movie_id) references movies (movie_id),
-foreign key (actor_id) references actor (actor_id)
+FOREIGN KEY (movie_id) REFERENCES movies (movie_id) ON DELETE CASCADE,
+FOREIGN KEY (actor_id) REFERENCES actor (actor_id) ON DELETE CASCADE
 ) engine = innoDB;
 
 CREATE TABLE movie_user (
 username VARCHAR(60) NOT NULL UNIQUE PRIMARY KEY,
 user_password VARCHAR(60) NOT NULL,
-is_admin int not null default 0
+is_admin INT NOT NULL DEFAULT 0
 ) ENGINE = innoDB;
 
 CREATE TABLE saved_movies (
@@ -66,7 +66,7 @@ username VARCHAR(60) NOT NULL,
 movie_id INT NOT NULL,
 save_time DATETIME DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY(username) REFERENCES movie_user (username),
-FOREIGN KEY(movie_id) REFERENCES movies (movie_id)
+FOREIGN KEY(movie_id) REFERENCES movies (movie_id) ON DELETE CASCADE
 ) ENGINE = innoDB;
 
 CREATE TABLE reviews (
@@ -75,7 +75,7 @@ movie_id INT NOT NULL,
 username VARCHAR(60) NOT NULL,
 review_text VARCHAR(2000) NOT NULL,
 FOREIGN KEY(username) REFERENCES movie_user (username),
-FOREIGN KEY(movie_id) REFERENCES movies (movie_id)
+FOREIGN KEY(movie_id) REFERENCES movies (movie_id) ON DELETE CASCADE
 ) ENGINE = innoDB;
 
 
@@ -155,15 +155,11 @@ DROP PROCEDURE IF EXISTS update_rating;
 DELIMITER $$
 CREATE PROCEDURE update_rating(new_id INT) BEGIN
 	SET @num_reviews = (SELECT COUNT(rating_id) FROM ratings 
-		WHERE (rating_source != 'IMDB'
-        OR rating_source != 'Rotten Tomatos')
-		AND ratings.movie_id = new_id);
+		WHERE ratings.movie_id = new_id);
     
 	IF @num_reviews > 0 THEN 
 		SET @review_total = (SELECT SUM(rating) FROM ratings 
-			WHERE (rating_source != 'IMDB'
-			OR rating_source != 'Rotten Tomatos')
-			AND ratings.movie_id = new_id);
+			WHERE ratings.movie_id = new_id);
         
 		SET  @average = @review_total / @num_reviews;
 	ELSE 
@@ -263,7 +259,6 @@ CREATE PROCEDURE get_popular_movies(num INT, start_date DATE, end_date DATE) BEG
     AND save_time BETWEEN start_date AND end_date
 	ORDER BY view_count DESC
     LIMIT num;
-    -- Take limit as an arg as well as a date range
 END $$
 DELIMITER ;
 
@@ -328,17 +323,43 @@ CREATE PROCEDURE edit_movie(
 END$$
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS add_actor;
+DELIMITER $$
+CREATE PROCEDURE add_actor(
+		a_name VARCHAR(60),
+        dob DATE,
+        bio VARCHAR(500),
+        height INT,
+        birthplace VARCHAR(100)) BEGIN
+	INSERT INTO actor (actor_name, dob, biography, height_in_inches, birthplace) VALUE
+    (a_name, dob, bio, height, birthplace);
+
+    SELECT LAST_INSERT_ID() AS actor_id;
+END $$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS edit_actor;
+DELIMITER $$
+CREATE PROCEDURE edit_actor(
+		a_id INT,
+		a_name VARCHAR(60),
+        dob DATE,
+        bio VARCHAR(500),
+        height INT,
+        birthplace VARCHAR(100)) BEGIN
+	UPDATE actor SET actor_name=a_name, dob=dob, biography=bio,
+    height_in_inches=height, birthplace=birthplace
+    WHERE actor_id = a_id;
+END $$
+DELIMITER ;
+
 
 DROP PROCEDURE IF EXISTS add_role;
 DELIMITER $$
-CREATE PROCEDURE add_role(movie_id INT, new_actor_name VARCHAR(60), role VARCHAR(60)) BEGIN
-
-
-INSERT INTO roles  (role_name, actor_name, movie_id) VALUES
-(role, new_actor_name, movie_id);
-
+CREATE PROCEDURE add_role(movie_id INT, actor_id INT, role VARCHAR(60)) BEGIN
+	INSERT INTO roles (role_name, actor_id, movie_id) VALUE
+	(role, actor_id, movie_id);
 END $$
-
 DELIMITER ;
 
 
@@ -373,10 +394,8 @@ insert into ratings (movie_id, rating_source, rating) VALUES
 (2, "user", 53),
 (3, "user", 76),
 (4, "user", 22),
-(5, "Rotten Tomatoes", 90),
 (5, "user", 35),
 (6, "user", 91),
-(7, "IMDB", 94),
 (7, "user", 98);
 
 insert into roles (role_name, actor_id, movie_id) VALUES

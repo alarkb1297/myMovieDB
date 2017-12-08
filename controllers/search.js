@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Search = require('../models/search');
 
-/* GET search page and results. */
+// Get search page and results
 router.get('/search', function (req, res, next) {
   var query = req.query.search;
   var sortm = parseInt(req.query.sortmode);

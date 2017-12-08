@@ -2,6 +2,8 @@ extends layout
 
 block content
   h2.container-fluid Details
+    if (session.user && session.user.isAdmin)
+      a.btn.btn-warning(href=id + "/edit") Edit Actor
 
     h3 Name
     p= details.actor_name
@@ -13,7 +15,7 @@ block content
     p= details.biography
 
     h3 Height
-    p= details.height_in_inches + ' inches (convert this to feet/inches)'
+    p= details.height_in_inches + ' inches'
 
     h3 Birthplace
     p= details.birthplace

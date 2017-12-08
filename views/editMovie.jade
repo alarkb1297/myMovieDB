@@ -1,15 +1,42 @@
 extends layout
 
 block content
+  script.
+    var rolenum = !{roles.length} - 1;
 
-  form#formEditMovie(name="editMovie", method="post", action="/movie/updateMovie")
-    .form-a
-      input#inputTitle.form-control(type="text", placeholder="title", name="title" value=values.title)
-      input#inputDirector.form-control(type="text", placeholder="director", name="director" value=values.director)
-      input#inputReleaseYear.form-control(type="text", placeholder="year", name="year" value=values.year)
-      input#inputGenre.form-control(type="text", placeholder="genre", name="genre" value=values.genre)
-      textarea#inputSummary.form-control(placeholder="summary", name="summary")= values.summary
-      input#inputTrailer.form-control(type="text", placeholder="trailer", name="trailer" value=values.trailer)
-      button#btnSubmit.btn.btn-success(name="id", type="submit" value=id) Update
+    function add_fields() {
+      rolenum++;
+      var to = document.getElementById("roleFields");
+      var newDiv = document.createElement("div");
+      newDiv.setAttribute("id", "role" + rolenum);
+      newDiv.setAttribute("class", "form-inline");
+      newDiv.innerHTML = '<input class=\"form-control\" name=\"rolename' + rolenum + '\" placeholder=\"Role name\"/>'
+        + '<input class=\"form-control\" name=\"actorid' + rolenum + '\" placeholder=\"Actor id\"/>'
+        + '<button type=\"button\" onclick=\"remove_field(\'role' + rolenum + '\');\" class=\"btn btn-success\">Remove role</button>';
+      to.appendChild(newDiv);
+    }
+    function remove_field(id) {
+      var f = document.getElementById(id);
+      f.parentNode.removeChild(f);
+    }
   form#deleteMovie(name="deleteMovie", method="post", action="/movie/deleteMovie")
     button#btnDelete.btn.btn-danger(name="id", type="submit" value=id) Delete
+  form#formEditMovie(name="editMovie", method="post", action="/movie/updateMovie")
+    .form-a
+      input#inputTitle.form-control(type="text", placeholder="title", name="title" value=values.title required)
+      input#inputDirector.form-control(type="text", placeholder="director", name="director" value=values.director required)
+      input#inputReleaseYear.form-control(type="number", min="1900", max="3000", placeholder="year", name="year" value=values.year required)
+      input#inputGenre.form-control(type="text", placeholder="genre", name="genre" value=values.genre required)
+      textarea#inputSummary.form-control(placeholder="summary", name="summary")= values.summary
+      input#inputTrailer.form-control(type="text", placeholder="trailer", name="trailer" value=values.trailer)
+      #roleFields
+        - rolenum = 0;
+        each role in roles
+          div.form-inline(id="role" + rolenum)
+            input.form-control(name="rolename" + rolenum, placeholder="Role name", value=role.name)
+            input.form-control(name="actorid" + rolenum, placeholder="Actor id", value=role.id)
+            button.btn.btn-success(type="button", onclick="remove_field(\'role" + rolenum + "\');") Remove role
+          - rolenum++;
+      button#btnAddMore.btn.btn-success(type="button", onclick="add_fields();") Add another Role
+      #submit
+        button#btnSubmit.btn.btn-success(name="id", type="submit" value=id) Update

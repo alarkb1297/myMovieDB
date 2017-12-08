@@ -1,0 +1,14 @@
+extends layout
+
+block content
+
+  form#deleteActor(name="deleteMovie", method="post", action="/actor/deleteActor")
+    button#btnDelete.btn.btn-danger(name="id", type="submit" value=id) Delete
+  form#formEditActor(name="editActor", method="post", action="/actor/updateActor")
+    .form-a
+      input#inputName.form-control(type="text", placeholder="Name", name="name", value=values.name required)
+      input#inputDoB.form-control(type="date", placeholder="Date of Birth", name="dob", value=values.dob required)
+      textarea#inputBiography.form-control(placeholder="Biography", name="bio")= values.bio
+      input#inputHeight.form-control(type="number", min=0, max=200, placeholder="Height (inches)", name="height", value=values.height)
+      input#inputBirthplace.form-control(type="text", placeholder="Birthplace", name="birthplace", value=values.birthplace)
+      button#btnSubmit.btn.btn-success(name="id", type="submit" value=id) Update

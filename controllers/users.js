@@ -3,7 +3,7 @@ var router = express.Router();
 var User = require('../models/user');
 var auth = require('../middlewares/auth');
 
-/* GET accounts page */
+// Get user account page
 router.get('/account', auth.loggedIn, function (req, res, next) {
 
   User.getSavedMovies(req.session.user.username, function (err, result) {
@@ -17,12 +17,12 @@ router.get('/account', auth.loggedIn, function (req, res, next) {
   });
 });
 
-/* GET register page */
+// Get user registration page
 router.get('/register', function (req, res, next) {
   res.render('register', { title: 'MyMovieDB', retry: req.query.retry });
 });
 
-/* POST new user info */
+// Post new user info
 router.post('/adduser', function(req,res) {
   var username= req.body.username;
   var password = req.body.password;
@@ -46,12 +46,12 @@ router.post('/adduser', function(req,res) {
   });
 });
 
-/* POST user authentication */
+// Post user authentication
 router.post('/login', function(req, res) {
   var username= req.body.username;
   var password = req.body.password;
 
-  // figure out a better way to display to the user these error messages
+  // TODO: figure out a better way to display to the user these error messages
 
   if(!username) {
     return res.status(401).send({ "message": "A username is required" });
@@ -71,20 +71,20 @@ router.post('/login', function(req, res) {
       }
     }
     User.isAdmin(uname, function (err, result) {
-        if (err) {
-          return next(err);
-        }
-        req.session.user = {
-            "username" : uname,
-            "isAdmin" : result
-        };
+      if (err) {
+        return next(err);
+      }
+      req.session.user = {
+        "username" : uname,
+        "isAdmin" : result
+      };
 
-        res.redirect(req.get('referer'));
+      res.redirect(req.get('referer'));
     });
   });
 });
 
-/* GET logout user */
+// Get logout user
 router.get('/logout', auth.loggedIn, function(req, res) {
   delete req.session.user;
   res.redirect('/');

@@ -1,7 +1,7 @@
 extends layout
 
 block content
-    h2.container-fluid Details
+     h2.container-fluid Details
         if (session.user)
             form#formSaveMovie(name="saveMovie", method="post", action="/movie/savemovie")
                 button#btnSubmit.btn.btn-success(name="id", type="submit", value=id)= locals.isSaved ? "Unsave" : "I've seen this!"
@@ -11,8 +11,6 @@ block content
                 button#btnSubmit.btn.btn-success(name="id", type="submit", value=id) Rate
             if (session.user.isAdmin)
                 a.btn.btn-warning(href=id + "/edit") Edit Movie
-                form#formAddRole(name="addRole", method="get", action=id + "/addRole")
-                    button#btnSubmit.btn.btn-warning(type="submit") Add Role
         else
             h3 Log in to save, rate, and review!
 
@@ -47,9 +45,10 @@ block content
         h3 Year Released
         p= details.release_year
 
-        h3 Trailer
-        iframe(width="560", height="315", src="https://www.youtube.com/embed/#{details.trailer}?rel=0",
-        frameborder="0", gesture="media", allow="encrypted-media", allowfullscreen)
+        if (details.trailer)
+            h3 Trailer
+            iframe(width="560", height="315", src="https://www.youtube.com/embed/#{details.trailer}?rel=0",
+            frameborder="0", gesture="media", allow="encrypted-media", allowfullscreen)
 
         h3 Reviews
         if (session.user)

@@ -24,4 +24,5 @@ block content
       p #[a(href="/movie/#{movie.movie_id}") #{movie.title}]
 
   if session.user && session.user.isAdmin
-    a.btn.btn-warning(href="/movie/addMovie") Add Movie
+    a.btn.btn-warning(href="/movie/add") Add Movie
+    a.btn.btn-warning(href="/actor/add") Add Actor

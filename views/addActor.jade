@@ -1,0 +1,12 @@
+extends layout
+
+block content
+
+  form#formAddActor(name="addActor", method="post", action="/actor/addActor")
+    .form-a
+      input#inputName.form-control(type="text", placeholder="Name", name="name" required)
+      input#inputDoB.form-control(type="date", placeholder="Date of Birth", name="dob" required)
+      textarea#inputBiography.form-control(placeholder="Biography", name="bio")
+      input#inputHeight.form-control(type="number", min=0, max=200, placeholder="Height (inches)", name="height")
+      input#inputBirthplace.form-control(type="text", placeholder="Birthplace", name="birthplace")
+      button#btnSubmit.btn.btn-success(type="submit") Insert

@@ -9,7 +9,6 @@ hash = function(password) {
 // Register a new user in the database
 exports.register = function(username, password, cb) {
   db.query('CALL register(?, ?)', [username, hash(password)], function (error, result, fields) {
-    console.log(error);
     if (error) return cb(error);
     cb(null, result);
   });
@@ -32,26 +31,23 @@ exports.login = function(username, password, cb) {
   });
 }
 
-// exports.changePassword
-
+// Check to see if a user has already saved the movie
 exports.savedMovie = function(username, movie_id, cb) {
   db.query('SELECT check_if_saved(?, ?) AS isSaved', [username, movie_id], function (error, result, fields) {
     if (error) return cb(error);
-
     cb(null, !!result[0].isSaved);
   });
 }
 
+// Save a movie to a user's account
 exports.saveMovie = function(username, movie_id, cb) {
   db.query('CALL toggle_save_movie(?, ?)', [username, movie_id], function (error, result, fields) {
     if (error) return cb(error);
-
-    // Simply return true if the movie was added or removed
     cb(null, true);
   });
 }
 
-// get saved movies
+// Get a user's saved movies
 exports.getSavedMovies = function(username, cb) {
   db.query('select title, movies.movie_id ' +
             'from saved_movies join movies on saved_movies.movie_id = movies.movie_id ' +
@@ -61,8 +57,7 @@ exports.getSavedMovies = function(username, cb) {
   });
 }
 
-
-//is admin
+// Check to see if a given user is an admin
 exports.isAdmin = function(username, cb) {
     db.query('SELECT is_admin from movie_user where username = ?', [username], function (error, result, fields) {
         if (error) return cb(error);

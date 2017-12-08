@@ -10,6 +10,7 @@ router.use('/movie', require('./movies'));
 router.use('/actor', require('./actors'));
 router.use('/', require('./search'));
 
+// Function for working with MYSQL date formatting
 function formatDate(d) {
   var dt = new Date(d);
   var mm = dt.getMonth() + 1;
@@ -20,7 +21,7 @@ function formatDate(d) {
   ].join('-');
 }
 
-// GET home page.
+// Get the main homepage, with popular movies list
 router.get('/', function (req, res, next) {
   var today = new Date();
   var tomorrow = new Date().setDate(today.getDate() + 1);
